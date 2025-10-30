@@ -1,0 +1,84 @@
+---
+title: "cricket_analysis"
+output: pdf_document
+date: "2025-10-09"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## imports and loading dataset 
+
+
+```{r initial_load}
+pacman::p_load(tidyverse, tidymodels, 
+               skimr, readxl, corrplot, car, bookdown, VIM,
+               janitor, xgboost, doParallel, knitr, forecast, foreach)
+
+ball_by_ball_data <- read_csv("./data/cleaned_ball_by_ball_data.csv")
+match_data <- read_csv("./data/cleaned_match_data.csv")
+```
+
+## exploring dataset
+
+```{r echo=FALSE}
+unique(match_data$result)
+
+
+match_data %>% 
+  count(result)
+
+```
+### obtain the match id of the matches I have to remove acc to 
+```{r removed_match_id}
+# https://github.com/angus-lewis/MDS-cricket-project-public/blob/main/projects.md#analysis-of-match-decisions
+
+excluded_match_ids <- match_data %>% 
+  filter(result %in% c("no result", "tie")) %>% 
+  pull(match_id)
+# length(excluded_match_ids)
+```
+
+### cleaning the dataset
+```{r}
+clean_match_data <- match_data %>% 
+  filter(!match_id %in% excluded_match_ids)
+
+```
+
+# Toss analysis 
+```{r}
+p_data <- clean_match_data %>%
+  mutate(toss_win_match_win = toss_winner == winner)
+
+# Compute proportion
+p <- mean(p_data$toss_win_match_win, na.rm = TRUE)
+p
+```
+
+## 
+```{r}
+# Count number of matches where toss winner also won
+x <- sum(p_data$toss_win_match_win, na.rm = TRUE)
+
+# Total number of matches
+n <- sum(!is.na(p_data$toss_win_match_win))
+
+# Hypothesis test: H0: p = 0.5
+prop_test_result <- prop.test(x = x, n = n, p = 0.5, alternative = "two.sided")
+prop_test_result
+
+```
+
+## 
+```{r}
+
+```
+
+## 
+```{r}
+
+```
+
+
