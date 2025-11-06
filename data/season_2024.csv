@@ -1,0 +1,42 @@
+"match_id","date","team1","team2","winner","result","winner_by_runs","winner_by_wickets","venue","toss_winner","toss_decision","home_team","city","season"
+1443057,2024-12-15,"Melbourne Stars","Perth Scorchers","Perth Scorchers",NA,NA,6,"Perth Stadium","Melbourne Stars","bat","Perth Scorchers","Perth",2024
+1443058,2024-12-16,"Melbourne Renegades","Sydney Sixers","Sydney Sixers",NA,NA,5,"Sydney Cricket Ground, Sydney","Sydney Sixers","field","Sydney Sixers","Sydney",2024
+1443059,2024-12-17,"Adelaide Strikers","Sydney Thunder","Sydney Thunder",NA,NA,2,"Manuka Oval, Canberra","Sydney Thunder","field","Sydney Thunder","Canberra",2024
+1443060,2024-12-18,"Melbourne Stars","Brisbane Heat","Brisbane Heat",NA,NA,8,"Melbourne Cricket Ground","Brisbane Heat","field","Melbourne Stars","Melbourne",2024
+1443061,2024-12-19,"Hobart Hurricanes","Melbourne Renegades","Melbourne Renegades",NA,NA,6,"GMHBA Stadium, South Geelong, Victoria","Melbourne Renegades","field","Melbourne Renegades","Geelong",2024
+1443062,2024-12-20,"Adelaide Strikers","Melbourne Stars","Adelaide Strikers",NA,15,NA,"Adelaide Oval","Melbourne Stars","field","Adelaide Strikers","Adelaide",2024
+1443063,2024-12-21,"Perth Scorchers","Hobart Hurricanes","Hobart Hurricanes",NA,NA,8,"Bellerive Oval, Hobart","Hobart Hurricanes","field","Hobart Hurricanes","Hobart",2024
+1443064,2024-12-21,"Sydney Thunder","Sydney Sixers","Sydney Sixers",NA,NA,5,"Sydney Showground Stadium","Sydney Sixers","field","Sydney Thunder","Sydney",2024
+1443065,2024-12-22,"Adelaide Strikers","Brisbane Heat","Brisbane Heat",NA,NA,3,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Brisbane Heat","field","Brisbane Heat","Brisbane",2024
+1443066,2024-12-23,"Perth Scorchers","Melbourne Renegades","Melbourne Renegades",NA,NA,2,"Docklands Stadium, Melbourne","Melbourne Renegades","field","Melbourne Renegades","Melbourne",2024
+1443067,2024-12-26,"Melbourne Stars","Sydney Sixers","Sydney Sixers",NA,NA,8,"Sydney Cricket Ground, Sydney","Sydney Sixers","field","Sydney Sixers","Sydney",2024
+1443068,2024-12-26,"Perth Scorchers","Brisbane Heat","Perth Scorchers",NA,33,NA,"Perth Stadium","Brisbane Heat","field","Perth Scorchers","Perth",2024
+1443069,2024-12-27,"Hobart Hurricanes","Adelaide Strikers","Hobart Hurricanes",NA,11,NA,"Adelaide Oval","Adelaide Strikers","field","Adelaide Strikers","Adelaide",2024
+1443070,2024-12-28,"Sydney Thunder","Melbourne Stars","Sydney Thunder",NA,18,NA,"Manuka Oval, Canberra","Melbourne Stars","field","Sydney Thunder","Canberra",2024
+1443071,2024-12-29,"Brisbane Heat","Sydney Sixers","Sydney Sixers",NA,NA,8,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Sydney Sixers","field","Brisbane Heat","Brisbane",2024
+1443072,2024-12-30,"Sydney Thunder","Melbourne Renegades","Sydney Thunder",NA,8,NA,"Sydney Showground Stadium","Melbourne Renegades","field","Sydney Thunder","Sydney",2024
+1443073,2024-12-31,"Adelaide Strikers","Perth Scorchers","Perth Scorchers",NA,NA,7,"Adelaide Oval","Perth Scorchers","field","Adelaide Strikers","Adelaide",2024
+1443074,2025-01-01,"Hobart Hurricanes","Sydney Sixers","Hobart Hurricanes",NA,50,NA,"Bellerive Oval, Hobart","Sydney Sixers","field","Hobart Hurricanes","Hobart",2024
+1443075,2025-01-01,"Brisbane Heat","Melbourne Stars","Melbourne Stars",NA,NA,5,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Melbourne Stars","field","Brisbane Heat","Brisbane",2024
+1443076,2025-01-02,"Melbourne Renegades","Adelaide Strikers","Adelaide Strikers",NA,NA,5,"Docklands Stadium, Melbourne","Adelaide Strikers","field","Melbourne Renegades","Melbourne",2024
+1443078,2025-01-03,"Perth Scorchers","Sydney Thunder","Sydney Thunder",NA,NA,4,"Perth Stadium","Sydney Thunder","field","Perth Scorchers","Perth",2024
+1443079,2025-01-04,"Melbourne Renegades","Melbourne Stars","Melbourne Stars",NA,NA,5,"Melbourne Cricket Ground","Melbourne Stars","field","Melbourne Stars","Melbourne",2024
+1443080,2025-01-05,"Adelaide Strikers","Hobart Hurricanes","Hobart Hurricanes",NA,NA,5,"Bellerive Oval, Hobart","Adelaide Strikers","bat","Hobart Hurricanes","Hobart",2024
+1443081,2025-01-06,"Sydney Thunder","Brisbane Heat","Brisbane Heat",NA,NA,5,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Brisbane Heat","field","Brisbane Heat","Brisbane",2024
+1443082,2025-01-07,"Perth Scorchers","Melbourne Renegades","Melbourne Renegades",NA,NA,4,"Perth Stadium","Melbourne Renegades","field","Perth Scorchers","Perth",2024
+1443084,2025-01-09,"Melbourne Stars","Sydney Sixers","Melbourne Stars",NA,16,NA,"Melbourne Cricket Ground","Sydney Sixers","field","Melbourne Stars","Melbourne",2024
+1443085,2025-01-10,"Sydney Thunder","Hobart Hurricanes","Hobart Hurricanes",NA,NA,6,"Bellerive Oval, Hobart","Hobart Hurricanes","field","Hobart Hurricanes","Hobart",2024
+1443086,2025-01-11,"Sydney Sixers","Perth Scorchers","Sydney Sixers",NA,14,NA,"Sydney Cricket Ground, Sydney","Perth Scorchers","field","Sydney Sixers","Sydney",2024
+1443087,2025-01-11,"Adelaide Strikers","Brisbane Heat","Adelaide Strikers",NA,56,NA,"Adelaide Oval","Brisbane Heat","field","Adelaide Strikers","Adelaide",2024
+1443088,2025-01-12,"Melbourne Stars","Melbourne Renegades","Melbourne Stars",NA,42,NA,"Docklands Stadium, Melbourne","Melbourne Renegades","field","Melbourne Renegades","Melbourne",2024
+1443089,2025-01-13,"Sydney Thunder","Perth Scorchers","Sydney Thunder",NA,61,NA,"Sydney Showground Stadium","Perth Scorchers","field","Sydney Thunder","Sydney",2024
+1443090,2025-01-14,"Melbourne Renegades","Hobart Hurricanes","Hobart Hurricanes",NA,NA,4,"Bellerive Oval, Hobart","Hobart Hurricanes","field","Hobart Hurricanes","Hobart",2024
+1443091,2025-01-15,"Adelaide Strikers","Sydney Sixers","Sydney Sixers",NA,NA,3,"Adelaide Oval","Sydney Sixers","field","Adelaide Strikers","Adelaide",2024
+1443092,2025-01-16,"Brisbane Heat","Hobart Hurricanes","Hobart Hurricanes",NA,NA,5,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Hobart Hurricanes","field","Brisbane Heat","Brisbane",2024
+1443094,2025-01-18,"Brisbane Heat","Melbourne Renegades","Melbourne Renegades",NA,NA,3,"Docklands Stadium, Melbourne","Melbourne Renegades","field","Melbourne Renegades","Melbourne",2024
+1443095,2025-01-18,"Adelaide Strikers","Perth Scorchers","Perth Scorchers",NA,NA,5,"Perth Stadium","Perth Scorchers","field","Perth Scorchers","Perth",2024
+1443096,2025-01-19,"Melbourne Stars","Hobart Hurricanes","Melbourne Stars",NA,40,NA,"Melbourne Cricket Ground","Hobart Hurricanes","field","Melbourne Stars","Melbourne",2024
+1443097,2025-01-21,"Hobart Hurricanes","Sydney Sixers","Hobart Hurricanes",NA,12,NA,"Bellerive Oval, Hobart","Sydney Sixers","field","Hobart Hurricanes","Hobart",2024
+1443098,2025-01-22,"Sydney Thunder","Melbourne Stars","Sydney Thunder",NA,21,NA,"Sydney Showground Stadium","Melbourne Stars","field","Sydney Thunder","Sydney",2024
+1443099,2025-01-24,"Sydney Sixers","Sydney Thunder","Sydney Thunder",NA,NA,4,"Sydney Cricket Ground, Sydney","Sydney Thunder","field","Sydney Sixers","Sydney",2024
+1443100,2025-01-27,"Sydney Thunder","Hobart Hurricanes","Hobart Hurricanes",NA,NA,7,"Bellerive Oval, Hobart","Hobart Hurricanes","field","Hobart Hurricanes","Hobart",2024

@@ -1,0 +1,59 @@
+"match_id","date","team1","team2","winner","result","winner_by_runs","winner_by_wickets","venue","toss_winner","toss_decision","home_team","city","season"
+1195573,2019-12-17,"Brisbane Heat","Sydney Thunder","Sydney Thunder",NA,29,NA,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Sydney Thunder","bat","Brisbane Heat","Brisbane",2019
+1195574,2019-12-18,"Sydney Sixers","Perth Scorchers","Sydney Sixers",NA,NA,8,"Sydney Cricket Ground, Sydney","Sydney Sixers","field","Sydney Sixers","Sydney",2019
+1195575,2019-12-19,"Melbourne Renegades","Sydney Thunder","Sydney Thunder",NA,NA,6,"GMHBA Stadium, South Geelong, Victoria","Melbourne Renegades","bat","Melbourne Renegades","Geelong",2019
+1195576,2019-12-20,"Hobart Hurricanes","Sydney Sixers","Hobart Hurricanes",NA,25,NA,"Traeger Park","Hobart Hurricanes","bat",NA,"Northern Territory",2019
+1195577,2019-12-20,"Brisbane Heat","Melbourne Stars","Melbourne Stars",NA,22,NA,"Carrara Oval","Brisbane Heat","field","Brisbane Heat","Gold Coast",2019
+1195579,2019-12-21,"Perth Scorchers","Melbourne Renegades","Perth Scorchers",NA,11,NA,"Perth Stadium","Melbourne Renegades","field","Perth Scorchers","Perth",2019
+1195580,2019-12-22,"Melbourne Stars","Hobart Hurricanes","Melbourne Stars",NA,52,NA,"Ted Summerton Reserve","Melbourne Stars","bat",NA,"Victoria",2019
+1195581,2019-12-22,"Sydney Sixers","Brisbane Heat","Brisbane Heat",NA,48,NA,"Sydney Cricket Ground, Sydney","Sydney Sixers","field","Sydney Sixers","Sydney",2019
+1195582,2019-12-23,"Adelaide Strikers","Perth Scorchers","Adelaide Strikers",NA,15,NA,"Adelaide Oval","Perth Scorchers","field","Adelaide Strikers","Adelaide",2019
+1195583,2019-12-24,"Hobart Hurricanes","Melbourne Renegades","Hobart Hurricanes",NA,NA,7,"Bellerive Oval, Hobart","Melbourne Renegades","bat","Hobart Hurricanes","Hobart",2019
+1195584,2019-12-26,"Perth Scorchers","Sydney Sixers","Sydney Sixers",NA,48,NA,"Perth Stadium","Perth Scorchers","field","Perth Scorchers","Perth",2019
+1195585,2019-12-27,"Melbourne Stars","Adelaide Strikers","Adelaide Strikers",NA,5,NA,"Carrara Oval","Melbourne Stars","field",NA,"Gold Coast",2019
+1195587,2019-12-29,"Melbourne Renegades","Adelaide Strikers","Adelaide Strikers",NA,18,NA,"Docklands Stadium, Melbourne","Adelaide Strikers","bat","Melbourne Renegades","Melbourne",2019
+1195588,2019-12-30,"Hobart Hurricanes","Melbourne Stars","Melbourne Stars",NA,4,NA,"Aurora Stadium, Launceston","Melbourne Stars","field","Hobart Hurricanes","Launceston",2019
+1195589,2019-12-31,"Adelaide Strikers","Sydney Thunder","Sydney Thunder",NA,3,NA,"Adelaide Oval","Sydney Thunder","bat","Adelaide Strikers","Adelaide",2019
+1195590,2020-01-01,"Brisbane Heat","Perth Scorchers","Perth Scorchers",NA,40,NA,"Carrara Oval","Perth Scorchers","bat","Brisbane Heat","Gold Coast",2019
+1195591,2020-01-02,"Sydney Thunder","Melbourne Stars","Melbourne Stars",NA,NA,3,"Sydney Showground Stadium","Sydney Thunder","bat","Sydney Thunder","Sydney",2019
+1195592,2020-01-02,"Melbourne Renegades","Sydney Sixers","Sydney Sixers",NA,NA,6,"Docklands Stadium, Melbourne","Melbourne Renegades","bat","Melbourne Renegades","Melbourne",2019
+1195593,2020-01-03,"Hobart Hurricanes","Brisbane Heat","Brisbane Heat",NA,31,NA,"Bellerive Oval, Hobart","Hobart Hurricanes","field","Hobart Hurricanes","Hobart",2019
+1195594,2020-01-04,"Melbourne Stars","Melbourne Renegades","Melbourne Stars",NA,NA,8,"Melbourne Cricket Ground","Melbourne Stars","field","Melbourne Stars","Melbourne",2019
+1195595,2020-01-05,"Sydney Sixers","Adelaide Strikers","Sydney Sixers",NA,NA,7,"International Sports Stadium, Coffs Harbour","Adelaide Strikers","bat",NA,"Coffs Harbour",2019
+1195596,2020-01-05,"Perth Scorchers","Hobart Hurricanes","Hobart Hurricanes",NA,8,NA,"Perth Stadium","Hobart Hurricanes","bat","Perth Scorchers","Perth",2019
+1195597,2020-01-06,"Sydney Thunder","Brisbane Heat","Brisbane Heat",NA,16,NA,"Sydney Showground Stadium","Brisbane Heat","bat","Sydney Thunder","Sydney",2019
+1195598,2020-01-07,"Melbourne Renegades","Perth Scorchers","Perth Scorchers",NA,NA,6,"GMHBA Stadium, South Geelong, Victoria","Perth Scorchers","field","Melbourne Renegades","Geelong",2019
+1195599,2020-01-08,"Adelaide Strikers","Sydney Sixers","Sydney Sixers",NA,NA,2,"Adelaide Oval","Sydney Sixers","field","Adelaide Strikers","Adelaide",2019
+1195600,2020-01-08,"Melbourne Stars","Sydney Thunder","Melbourne Stars",NA,NA,6,"Melbourne Cricket Ground","Melbourne Stars","field","Melbourne Stars","Melbourne",2019
+1195601,2020-01-09,"Brisbane Heat","Hobart Hurricanes","Brisbane Heat",NA,NA,5,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Hobart Hurricanes","bat","Brisbane Heat","Brisbane",2019
+1195602,2020-01-10,"Melbourne Renegades","Melbourne Stars","Melbourne Stars",NA,NA,7,"Docklands Stadium, Melbourne","Melbourne Stars","field","Melbourne Renegades","Melbourne",2019
+1195603,2020-01-11,"Sydney Thunder","Hobart Hurricanes","Sydney Thunder",NA,NA,4,"Sydney Showground Stadium","Sydney Thunder","field","Sydney Thunder","Sydney",2019
+1195604,2020-01-11,"Perth Scorchers","Brisbane Heat","Perth Scorchers",NA,34,NA,"Perth Stadium","Perth Scorchers","bat","Perth Scorchers","Perth",2019
+1195605,2020-01-12,"Adelaide Strikers","Melbourne Renegades","Adelaide Strikers",NA,63,NA,"Adelaide Oval","Adelaide Strikers","bat","Adelaide Strikers","Adelaide",2019
+1195606,2020-01-12,"Melbourne Stars","Sydney Sixers","Melbourne Stars",NA,44,NA,"Melbourne Cricket Ground","Sydney Sixers","field","Melbourne Stars","Melbourne",2019
+1195607,2020-01-13,"Hobart Hurricanes","Perth Scorchers","Perth Scorchers",NA,77,NA,"Bellerive Oval, Hobart","Hobart Hurricanes","field","Hobart Hurricanes","Hobart",2019
+1195608,2020-01-14,"Brisbane Heat","Adelaide Strikers","Brisbane Heat",NA,NA,7,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Adelaide Strikers","bat","Brisbane Heat","Brisbane",2019
+1195609,2020-01-15,"Sydney Thunder","Melbourne Renegades","Melbourne Renegades",NA,12,NA,"Manuka Oval, Canberra","Melbourne Renegades","bat","Sydney Thunder","Canberra",2019
+1195610,2020-01-15,"Perth Scorchers","Melbourne Stars","Melbourne Stars",NA,NA,8,"Perth Stadium","Perth Scorchers","bat","Perth Scorchers","Perth",2019
+1195612,2020-01-17,"Adelaide Strikers","Brisbane Heat","Adelaide Strikers",NA,NA,10,"Adelaide Oval","Brisbane Heat","bat","Adelaide Strikers","Adelaide",2019
+1195613,2020-01-18,"Melbourne Stars","Perth Scorchers","Melbourne Stars",NA,10,NA,"Melbourne Cricket Ground","Melbourne Stars","bat","Melbourne Stars","Melbourne",2019
+1195614,2020-01-18,"Sydney Thunder","Sydney Sixers","Sydney Thunder",NA,4,NA,"Sydney Showground Stadium","Sydney Thunder","field","Sydney Thunder","Sydney",2019
+1195615,2020-01-19,"Hobart Hurricanes","Adelaide Strikers","Adelaide Strikers",NA,10,NA,"Aurora Stadium, Launceston","Hobart Hurricanes","field","Hobart Hurricanes","Launceston",2019
+1195616,2020-01-19,"Brisbane Heat","Melbourne Renegades","Melbourne Renegades",NA,44,NA,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Brisbane Heat","field","Brisbane Heat","Brisbane",2019
+1195617,2020-01-20,"Sydney Sixers","Melbourne Stars","Sydney Sixers",NA,21,NA,"Sydney Cricket Ground, Sydney","Melbourne Stars","field","Sydney Sixers","Sydney",2019
+1195618,2020-01-20,"Perth Scorchers","Sydney Thunder","Perth Scorchers",NA,NA,8,"Perth Stadium","Sydney Thunder","bat","Perth Scorchers","Perth",2019
+1195619,2020-01-21,"Melbourne Renegades","Hobart Hurricanes","Hobart Hurricanes",NA,4,NA,"Docklands Stadium, Melbourne","Melbourne Renegades","field","Melbourne Renegades","Melbourne",2019
+1195620,2020-01-22,"Adelaide Strikers","Melbourne Stars","Adelaide Strikers",NA,11,NA,"Adelaide Oval","Melbourne Stars","field","Adelaide Strikers","Adelaide",2019
+1195621,2020-01-23,"Brisbane Heat","Sydney Sixers","Sydney Sixers",NA,NA,8,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Sydney Sixers","field","Brisbane Heat","Brisbane",2019
+1195622,2020-01-24,"Hobart Hurricanes","Sydney Thunder","Hobart Hurricanes",NA,57,NA,"Bellerive Oval, Hobart","Hobart Hurricanes","bat","Hobart Hurricanes","Hobart",2019
+1195623,2020-01-24,"Perth Scorchers","Adelaide Strikers","Adelaide Strikers",NA,16,NA,"Perth Stadium","Adelaide Strikers","bat","Perth Scorchers","Perth",2019
+1195624,2020-01-25,"Sydney Sixers","Melbourne Renegades","Sydney Sixers",NA,NA,7,"Sydney Cricket Ground, Sydney","Sydney Sixers","field","Sydney Sixers","Sydney",2019
+1195625,2020-01-25,"Melbourne Stars","Brisbane Heat","Brisbane Heat",NA,71,NA,"Melbourne Cricket Ground","Brisbane Heat","bat","Melbourne Stars","Melbourne",2019
+1195626,2020-01-26,"Sydney Thunder","Perth Scorchers","Sydney Thunder",NA,NA,7,"Sydney Showground Stadium","Perth Scorchers","bat","Sydney Thunder","Sydney",2019
+1195627,2020-01-26,"Adelaide Strikers","Hobart Hurricanes","Hobart Hurricanes",NA,10,NA,"Adelaide Oval","Hobart Hurricanes","bat","Adelaide Strikers","Adelaide",2019
+1195628,2020-01-27,"Melbourne Renegades","Brisbane Heat","Melbourne Renegades",NA,NA,7,"Docklands Stadium, Melbourne","Brisbane Heat","bat","Melbourne Renegades","Melbourne",2019
+1195629,2020-01-30,"Hobart Hurricanes","Sydney Thunder","Sydney Thunder",NA,57,NA,"Bellerive Oval, Hobart","Sydney Thunder","bat","Hobart Hurricanes","Hobart",2019
+1195630,2020-01-31,"Melbourne Stars","Sydney Sixers","Sydney Sixers",NA,43,NA,"Melbourne Cricket Ground","Melbourne Stars","field","Melbourne Stars","Melbourne",2019
+1195631,2020-02-01,"Adelaide Strikers","Sydney Thunder","Sydney Thunder",NA,8,NA,"Adelaide Oval","Adelaide Strikers","field","Adelaide Strikers","Adelaide",2019
+1195632,2020-02-06,"Melbourne Stars","Sydney Thunder","Melbourne Stars",NA,28,NA,"Melbourne Cricket Ground","Melbourne Stars","bat","Melbourne Stars","Melbourne",2019
+1195633,2020-02-08,"Sydney Sixers","Melbourne Stars","Sydney Sixers",NA,19,NA,"Sydney Cricket Ground, Sydney","Melbourne Stars","field","Sydney Sixers","Sydney",2019

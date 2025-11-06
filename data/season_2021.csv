@@ -1,0 +1,61 @@
+"match_id","date","team1","team2","winner","result","winner_by_runs","winner_by_wickets","venue","toss_winner","toss_decision","home_team","city","season"
+1269638,2021-12-05,"Sydney Sixers","Melbourne Stars","Sydney Sixers",NA,152,NA,"Sydney Cricket Ground, Sydney","Melbourne Stars","field","Sydney Sixers","Sydney",2021
+1269639,2021-12-06,"Brisbane Heat","Sydney Thunder","Sydney Thunder",NA,NA,7,"Manuka Oval, Canberra","Sydney Thunder","field","Sydney Thunder","Canberra",2021
+1269640,2021-12-07,"Melbourne Renegades","Adelaide Strikers","Melbourne Renegades",NA,2,NA,"Docklands Stadium, Melbourne","Melbourne Renegades","bat","Melbourne Renegades","Melbourne",2021
+1269641,2021-12-08,"Sydney Sixers","Hobart Hurricanes","Sydney Sixers",NA,14,NA,"Aurora Stadium, Launceston","Hobart Hurricanes","field","Hobart Hurricanes","Launceston",2021
+1269642,2021-12-08,"Perth Scorchers","Brisbane Heat","Perth Scorchers",NA,6,NA,"Perth Stadium","Perth Scorchers","bat","Perth Scorchers","Perth",2021
+1269643,2021-12-09,"Adelaide Strikers","Melbourne Renegades","Adelaide Strikers",NA,49,NA,"Adelaide Oval","Adelaide Strikers","bat","Adelaide Strikers","Adelaide",2021
+1269644,2021-12-10,"Melbourne Stars","Sydney Thunder","Melbourne Stars",NA,4,NA,"Melbourne Cricket Ground","Sydney Thunder","field","Melbourne Stars","Melbourne",2021
+1269645,2021-12-11,"Hobart Hurricanes","Sydney Sixers","Hobart Hurricanes",NA,44,NA,"Sydney Cricket Ground, Sydney","Hobart Hurricanes","bat","Sydney Sixers","Sydney",2021
+1269646,2021-12-11,"Perth Scorchers","Adelaide Strikers","Perth Scorchers",NA,49,NA,"Sydney Showground Stadium","Perth Scorchers","bat",NA,"Sydney",2021
+1269647,2021-12-12,"Sydney Thunder","Melbourne Stars","Melbourne Stars",NA,NA,6,"Sydney Showground Stadium","Melbourne Stars","field","Sydney Thunder","Sydney",2021
+1269648,2021-12-13,"Melbourne Renegades","Brisbane Heat","Brisbane Heat",NA,NA,5,"Carrara Oval","Brisbane Heat","field","Brisbane Heat","Gold Coast",2021
+1269649,2021-12-14,"Perth Scorchers","Hobart Hurricanes","Perth Scorchers",NA,53,NA,"Bellerive Oval, Hobart","Perth Scorchers","bat","Hobart Hurricanes","Hobart",2021
+1269650,2021-12-15,"Melbourne Stars","Sydney Sixers","Sydney Sixers",NA,NA,7,"Melbourne Cricket Ground","Sydney Sixers","field","Melbourne Stars","Melbourne",2021
+1269651,2021-12-19,"Sydney Thunder","Brisbane Heat","Sydney Thunder",NA,53,NA,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Brisbane Heat","field","Brisbane Heat","Brisbane",2021
+1269652,2021-12-20,"Perth Scorchers","Hobart Hurricanes","Perth Scorchers",NA,42,NA,"Bellerive Oval, Hobart","Perth Scorchers","bat","Hobart Hurricanes","Hobart",2021
+1269653,2021-12-21,"Adelaide Strikers","Sydney Sixers","Sydney Sixers",NA,NA,4,"Sydney Cricket Ground, Sydney","Adelaide Strikers","bat","Sydney Sixers","Sydney",2021
+1269654,2021-12-22,"Perth Scorchers","Melbourne Renegades","Perth Scorchers",NA,21,NA,"Docklands Stadium, Melbourne","Perth Scorchers","bat","Melbourne Renegades","Melbourne",2021
+1269655,2021-12-23,"Brisbane Heat","Adelaide Strikers","Brisbane Heat",NA,39,NA,"Adelaide Oval","Brisbane Heat","bat","Adelaide Strikers","Adelaide",2021
+1269656,2021-12-24,"Hobart Hurricanes","Melbourne Stars","Hobart Hurricanes",NA,24,NA,"Bellerive Oval, Hobart","Hobart Hurricanes","bat","Hobart Hurricanes","Hobart",2021
+1269657,2021-12-26,"Sydney Sixers","Sydney Thunder","Sydney Sixers",NA,30,NA,"Sydney Showground Stadium","Sydney Thunder","field","Sydney Thunder","Sydney",2021
+1269658,2021-12-26,"Melbourne Renegades","Perth Scorchers","Perth Scorchers",NA,NA,8,"Docklands Stadium, Melbourne","Melbourne Renegades","bat","Melbourne Renegades","Melbourne",2021
+1269659,2021-12-27,"Adelaide Strikers","Hobart Hurricanes","Hobart Hurricanes",NA,NA,7,"Bellerive Oval, Hobart","Adelaide Strikers","bat","Hobart Hurricanes","Hobart",2021
+1269660,2021-12-27,"Melbourne Stars","Brisbane Heat","Melbourne Stars",NA,20,NA,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Brisbane Heat","field","Brisbane Heat","Brisbane",2021
+1269661,2021-12-28,"Sydney Thunder","Perth Scorchers","Sydney Thunder",NA,34,NA,"Manuka Oval, Canberra","Perth Scorchers","field","Sydney Thunder","Canberra",2021
+1269662,2021-12-29,"Brisbane Heat","Sydney Sixers","Sydney Sixers",NA,NA,2,"Sydney Cricket Ground, Sydney","Brisbane Heat","bat","Sydney Sixers","Sydney",2021
+1269663,2021-12-29,"Hobart Hurricanes","Melbourne Renegades","Hobart Hurricanes",NA,85,NA,"Docklands Stadium, Melbourne","Melbourne Renegades","field","Melbourne Renegades","Melbourne",2021
+1269664,2022-01-11,"Perth Scorchers","Melbourne Stars","Perth Scorchers",NA,47,NA,"GMHBA Stadium, South Geelong, Victoria","Perth Scorchers","bat",NA,"Geelong",2021
+1269665,2021-12-31,"Sydney Thunder","Adelaide Strikers","Sydney Thunder",NA,22,NA,"Adelaide Oval","Sydney Thunder","bat","Adelaide Strikers","Adelaide",2021
+1269666,2022-01-01,"Brisbane Heat","Hobart Hurricanes","Brisbane Heat",NA,14,NA,"Bellerive Oval, Hobart","Hobart Hurricanes","field","Hobart Hurricanes","Hobart",2021
+1269668,2022-01-02,"Perth Scorchers","Melbourne Stars","Perth Scorchers",NA,50,NA,"Junction Oval, Melbourne","Perth Scorchers","bat",NA,"Melbourne",2021
+1269669,2022-01-02,"Sydney Thunder","Adelaide Strikers","Sydney Thunder",NA,28,NA,"Sydney Showground Stadium","Sydney Thunder","bat","Sydney Thunder","Sydney",2021
+1269670,2022-01-03,"Melbourne Stars","Melbourne Renegades","Melbourne Renegades",NA,NA,5,"Melbourne Cricket Ground","Melbourne Stars","bat","Melbourne Stars","Melbourne",2021
+1269671,2022-01-21,"Adelaide Strikers","Hobart Hurricanes","Adelaide Strikers",NA,22,NA,"Melbourne Cricket Ground","Adelaide Strikers","bat",NA,"Melbourne",2021
+1269672,2022-01-05,"Hobart Hurricanes","Adelaide Strikers","Adelaide Strikers",NA,NA,7,"Adelaide Oval","Adelaide Strikers","field","Adelaide Strikers","Adelaide",2021
+1269673,2022-01-06,"Perth Scorchers","Sydney Thunder","Sydney Thunder",NA,NA,6,"Carrara Oval","Perth Scorchers","bat",NA,"Gold Coast",2021
+1269674,2022-01-06,"Brisbane Heat","Melbourne Renegades","Melbourne Renegades",NA,NA,5,"GMHBA Stadium, South Geelong, Victoria","Melbourne Renegades","field","Melbourne Renegades","Geelong",2021
+1269675,2022-01-04,"Perth Scorchers","Sydney Sixers","Perth Scorchers",NA,10,NA,"Carrara Oval","Perth Scorchers","bat",NA,"Gold Coast",2021
+1269676,2022-01-15,"Adelaide Strikers","Melbourne Stars","Adelaide Strikers",NA,23,NA,"Adelaide Oval","Melbourne Stars","field","Adelaide Strikers","Adelaide",2021
+1269677,2022-01-08,"Sydney Thunder","Melbourne Renegades","Sydney Thunder",NA,129,NA,"Docklands Stadium, Melbourne","Melbourne Renegades","field","Melbourne Renegades","Melbourne",2021
+1269678,2022-01-08,"Brisbane Heat","Hobart Hurricanes","Hobart Hurricanes",NA,NA,8,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Hobart Hurricanes","field","Brisbane Heat","Brisbane",2021
+1269679,2022-01-09,"Sydney Sixers","Perth Scorchers","Perth Scorchers",NA,NA,5,"International Sports Stadium, Coffs Harbour","Sydney Sixers","bat",NA,"Coffs Harbour",2021
+1269680,2022-01-10,"Adelaide Strikers","Melbourne Stars","Melbourne Stars",NA,NA,5,"Melbourne Cricket Ground","Melbourne Stars","field","Melbourne Stars","Melbourne",2021
+1269681,2022-01-10,"Hobart Hurricanes","Sydney Thunder","Sydney Thunder",NA,NA,9,"Melbourne Cricket Ground","Hobart Hurricanes","bat",NA,"Melbourne",2021
+1269682,2022-01-11,"Sydney Sixers","Melbourne Renegades","Sydney Sixers",NA,45,NA,"GMHBA Stadium, South Geelong, Victoria","Sydney Sixers","bat","Melbourne Renegades","Geelong",2021
+1269683,2022-01-12,"Adelaide Strikers","Brisbane Heat","Adelaide Strikers",NA,71,NA,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Adelaide Strikers","bat","Brisbane Heat","Brisbane",2021
+1269684,2022-01-13,"Hobart Hurricanes","Sydney Thunder","Hobart Hurricanes",NA,9,NA,"Docklands Stadium, Melbourne","Hobart Hurricanes","bat",NA,"Melbourne",2021
+1269685,2022-01-13,"Melbourne Renegades","Melbourne Stars","Melbourne Stars",NA,NA,6,"Docklands Stadium, Melbourne","Melbourne Renegades","bat","Melbourne Renegades","Melbourne",2021
+1269686,2022-01-14,"Perth Scorchers","Adelaide Strikers","Adelaide Strikers",NA,NA,6,"Adelaide Oval","Adelaide Strikers","field","Adelaide Strikers","Adelaide",2021
+1269687,2022-01-15,"Sydney Sixers","Sydney Thunder","Sydney Sixers",NA,60,NA,"Sydney Cricket Ground, Sydney","Sydney Thunder","field","Sydney Sixers","Sydney",2021
+1269688,2022-01-16,"Brisbane Heat","Melbourne Stars","Melbourne Stars",NA,NA,8,"Melbourne Cricket Ground","Brisbane Heat","bat","Melbourne Stars","Melbourne",2021
+1269689,2022-01-17,"Sydney Sixers","Adelaide Strikers","Adelaide Strikers",NA,NA,8,"Adelaide Oval","Sydney Sixers","bat","Adelaide Strikers","Adelaide",2021
+1269690,2022-01-17,"Brisbane Heat","Perth Scorchers","Perth Scorchers",NA,NA,6,"Docklands Stadium, Melbourne","Brisbane Heat","bat",NA,"Melbourne",2021
+1269691,2022-01-18,"Hobart Hurricanes","Melbourne Renegades","Hobart Hurricanes",NA,6,NA,"Docklands Stadium, Melbourne","Hobart Hurricanes","bat","Melbourne Renegades","Melbourne",2021
+1269692,2022-01-19,"Sydney Sixers","Brisbane Heat","Sydney Sixers",NA,27,NA,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Brisbane Heat","field","Brisbane Heat","Brisbane",2021
+1269693,2022-01-19,"Melbourne Stars","Hobart Hurricanes","Melbourne Stars",NA,106,NA,"Melbourne Cricket Ground","Hobart Hurricanes","field","Melbourne Stars","Melbourne",2021
+1269694,2022-01-19,"Sydney Thunder","Melbourne Renegades","Sydney Thunder",NA,1,NA,"Melbourne Cricket Ground","Melbourne Renegades","field","Melbourne Renegades","Melbourne",2021
+1269695,2022-01-22,"Perth Scorchers","Sydney Sixers","Perth Scorchers",NA,48,NA,"Docklands Stadium, Melbourne","Perth Scorchers","bat",NA,"Melbourne",2021
+1269696,2022-01-23,"Adelaide Strikers","Sydney Thunder","Adelaide Strikers",NA,6,NA,"Melbourne Cricket Ground","Adelaide Strikers","bat",NA,"Melbourne",2021
+1269697,2022-01-26,"Adelaide Strikers","Sydney Sixers","Sydney Sixers",NA,NA,4,"Sydney Cricket Ground, Sydney","Sydney Sixers","field","Sydney Sixers","Sydney",2021
+1269698,2022-01-28,"Perth Scorchers","Sydney Sixers","Perth Scorchers",NA,79,NA,"Docklands Stadium, Melbourne","Sydney Sixers","field",NA,"Melbourne",2021

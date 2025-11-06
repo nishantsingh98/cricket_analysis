@@ -1,0 +1,33 @@
+"match_id","date","team1","team2","winner","result","winner_by_runs","winner_by_wickets","venue","toss_winner","toss_decision","home_team","city","season"
+897697,2015-12-18,"Adelaide Strikers","Melbourne Stars","Adelaide Strikers",NA,19,NA,"Adelaide Oval","Melbourne Stars","field","Adelaide Strikers","Adelaide",2015
+897699,2015-12-19,"Brisbane Heat","Melbourne Renegades","Melbourne Renegades",NA,NA,7,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Brisbane Heat","bat","Brisbane Heat","Brisbane",2015
+897701,2015-12-20,"Sydney Sixers","Hobart Hurricanes","Sydney Sixers",NA,95,NA,"Sydney Cricket Ground, Sydney","Sydney Sixers","bat","Sydney Sixers","Sydney",2015
+897705,2015-12-21,"Perth Scorchers","Adelaide Strikers","Adelaide Strikers",NA,NA,4,"Western Australia Cricket Association Ground","Perth Scorchers","bat","Perth Scorchers","Perth",2015
+897707,2015-12-22,"Hobart Hurricanes","Brisbane Heat","Hobart Hurricanes",NA,20,NA,"Bellerive Oval, Hobart","Hobart Hurricanes","bat","Hobart Hurricanes","Hobart",2015
+897709,2015-12-23,"Melbourne Renegades","Sydney Sixers","Sydney Sixers",NA,NA,3,"Docklands Stadium, Melbourne","Sydney Sixers","field","Melbourne Renegades","Melbourne",2015
+897711,2015-12-26,"Perth Scorchers","Brisbane Heat","Perth Scorchers",NA,NA,9,"Western Australia Cricket Association Ground","Brisbane Heat","bat","Perth Scorchers","Perth",2015
+897713,2015-12-27,"Sydney Sixers","Melbourne Stars","Melbourne Stars",NA,NA,5,"Sydney Cricket Ground, Sydney","Sydney Sixers","bat","Sydney Sixers","Sydney",2015
+897715,2015-12-28,"Sydney Thunder","Adelaide Strikers","Sydney Thunder",NA,NA,7,"Sydney Showground Stadium","Adelaide Strikers","bat","Sydney Thunder","Sydney",2015
+897717,2015-12-29,"Brisbane Heat","Hobart Hurricanes","Hobart Hurricanes",NA,15,NA,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Hobart Hurricanes","bat","Brisbane Heat","Brisbane",2015
+897719,2015-12-30,"Melbourne Renegades","Perth Scorchers","Perth Scorchers",NA,NA,10,"Docklands Stadium, Melbourne","Perth Scorchers","field","Melbourne Renegades","Melbourne",2015
+897721,2015-12-31,"Adelaide Strikers","Sydney Sixers","Adelaide Strikers",NA,NA,5,"Adelaide Oval","Adelaide Strikers","field","Adelaide Strikers","Adelaide",2015
+897723,2016-01-01,"Hobart Hurricanes","Sydney Thunder","Hobart Hurricanes",NA,11,NA,"Bellerive Oval, Hobart","Sydney Thunder","field","Hobart Hurricanes","Hobart",2015
+897725,2016-01-02,"Melbourne Stars","Melbourne Renegades","Melbourne Stars",NA,NA,7,"Melbourne Cricket Ground","Melbourne Stars","field","Melbourne Stars","Melbourne",2015
+897727,2016-01-02,"Perth Scorchers","Sydney Sixers","Perth Scorchers",NA,NA,9,"Western Australia Cricket Association Ground","Sydney Sixers","bat","Perth Scorchers","Perth",2015
+897729,2016-01-03,"Brisbane Heat","Sydney Thunder","Brisbane Heat",NA,NA,6,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Brisbane Heat","field","Brisbane Heat","Brisbane",2015
+897731,2016-01-04,"Hobart Hurricanes","Melbourne Renegades","Melbourne Renegades",NA,NA,5,"Bellerive Oval, Hobart","Melbourne Renegades","field","Hobart Hurricanes","Hobart",2015
+897733,2016-01-05,"Adelaide Strikers","Perth Scorchers","Adelaide Strikers",NA,36,NA,"Adelaide Oval","Adelaide Strikers","bat","Adelaide Strikers","Adelaide",2015
+897735,2016-01-06,"Melbourne Stars","Hobart Hurricanes","Melbourne Stars",NA,NA,8,"Melbourne Cricket Ground","Melbourne Stars","field","Melbourne Stars","Melbourne",2015
+897737,2016-01-07,"Sydney Thunder","Perth Scorchers","Perth Scorchers",NA,30,NA,"Sydney Showground Stadium","Sydney Thunder","field","Sydney Thunder","Sydney",2015
+897739,2016-01-08,"Brisbane Heat","Adelaide Strikers","Adelaide Strikers",NA,NA,8,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Adelaide Strikers","field","Brisbane Heat","Brisbane",2015
+897741,2016-01-09,"Melbourne Renegades","Melbourne Stars","Melbourne Stars",NA,NA,8,"Docklands Stadium, Melbourne","Melbourne Stars","field","Melbourne Renegades","Melbourne",2015
+897743,2016-01-10,"Hobart Hurricanes","Perth Scorchers","Perth Scorchers",NA,1,NA,"Bellerive Oval, Hobart","Perth Scorchers","bat","Hobart Hurricanes","Hobart",2015
+897745,2016-01-10,"Sydney Sixers","Brisbane Heat","Brisbane Heat",NA,6,NA,"Sydney Cricket Ground, Sydney","Brisbane Heat","bat","Sydney Sixers","Sydney",2015
+897747,2016-01-11,"Sydney Thunder","Melbourne Renegades","Melbourne Renegades",NA,NA,5,"Sydney Showground Stadium","Sydney Thunder","bat","Sydney Thunder","Sydney",2015
+897749,2016-01-13,"Adelaide Strikers","Hobart Hurricanes","Adelaide Strikers",NA,NA,6,"Adelaide Oval","Hobart Hurricanes","bat","Adelaide Strikers","Adelaide",2015
+897751,2016-01-14,"Melbourne Stars","Brisbane Heat","Brisbane Heat",NA,56,NA,"Melbourne Cricket Ground","Melbourne Stars","field","Melbourne Stars","Melbourne",2015
+897753,2016-01-16,"Sydney Sixers","Sydney Thunder","Sydney Thunder",NA,46,NA,"Sydney Cricket Ground, Sydney","Sydney Sixers","field","Sydney Sixers","Sydney",2015
+897757,2016-01-18,"Melbourne Renegades","Adelaide Strikers","Adelaide Strikers",NA,27,NA,"Docklands Stadium, Melbourne","Melbourne Renegades","field","Melbourne Renegades","Melbourne",2015
+897759,2016-01-21,"Adelaide Strikers","Sydney Thunder","Sydney Thunder",NA,NA,8,"Adelaide Oval","Adelaide Strikers","bat","Adelaide Strikers","Adelaide",2015
+897761,2016-01-22,"Melbourne Stars","Perth Scorchers","Melbourne Stars",NA,NA,7,"Melbourne Cricket Ground","Melbourne Stars","field","Melbourne Stars","Melbourne",2015
+897763,2016-01-24,"Melbourne Stars","Sydney Thunder","Sydney Thunder",NA,NA,3,"Melbourne Cricket Ground","Sydney Thunder","field","Melbourne Stars","Melbourne",2015

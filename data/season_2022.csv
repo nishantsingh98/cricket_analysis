@@ -1,0 +1,61 @@
+"match_id","date","team1","team2","winner","result","winner_by_runs","winner_by_wickets","venue","toss_winner","toss_decision","home_team","city","season"
+1324624,2022-12-13,"Melbourne Stars","Sydney Thunder","Sydney Thunder",NA,NA,1,"Manuka Oval, Canberra","Sydney Thunder","field","Sydney Thunder","Canberra",2022
+1324625,2022-12-14,"Adelaide Strikers","Sydney Sixers","Adelaide Strikers",NA,51,NA,"Adelaide Oval","Adelaide Strikers","bat","Adelaide Strikers","Adelaide",2022
+1324626,2022-12-15,"Melbourne Renegades","Brisbane Heat","Melbourne Renegades",NA,22,NA,"Cazaly's Stadium, Cairns","Brisbane Heat","field",NA,"Cairns",2022
+1324627,2022-12-16,"Melbourne Stars","Hobart Hurricanes","Melbourne Stars",NA,38,NA,"Melbourne Cricket Ground","Hobart Hurricanes","field","Melbourne Stars","Melbourne",2022
+1324628,2022-12-16,"Adelaide Strikers","Sydney Thunder","Adelaide Strikers",NA,124,NA,"Sydney Showground Stadium","Adelaide Strikers","bat","Sydney Thunder","Sydney",2022
+1324629,2022-12-17,"Perth Scorchers","Sydney Sixers","Perth Scorchers",NA,38,NA,"Perth Stadium","Perth Scorchers","bat","Perth Scorchers","Perth",2022
+1324630,2022-12-18,"Sydney Thunder","Melbourne Renegades","Melbourne Renegades",NA,NA,4,"Docklands Stadium, Melbourne","Sydney Thunder","bat","Melbourne Renegades","Melbourne",2022
+1324631,2022-12-19,"Hobart Hurricanes","Perth Scorchers","Hobart Hurricanes",NA,8,NA,"University of Tasmania Stadium, Launceston","Hobart Hurricanes","bat","Hobart Hurricanes","Launceston",2022
+1324632,2022-12-20,"Sydney Thunder","Adelaide Strikers","Adelaide Strikers",NA,NA,6,"Adelaide Oval","Sydney Thunder","bat","Adelaide Strikers","Adelaide",2022
+1324633,2022-12-21,"Brisbane Heat","Melbourne Renegades","Melbourne Renegades",NA,NA,4,"GMHBA Stadium, South Geelong, Victoria","Brisbane Heat","bat","Melbourne Renegades","Geelong",2022
+1324634,2022-12-22,"Sydney Sixers","Hobart Hurricanes","Sydney Sixers",NA,6,NA,"Sydney Cricket Ground, Sydney","Sydney Sixers","bat","Sydney Sixers","Sydney",2022
+1324635,2022-12-23,"Perth Scorchers","Melbourne Stars","Perth Scorchers",NA,61,NA,"Junction Oval, Melbourne","Perth Scorchers","bat",NA,"Melbourne",2022
+1324636,2022-12-23,"Brisbane Heat","Adelaide Strikers","Brisbane Heat",NA,6,NA,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Brisbane Heat","bat","Brisbane Heat","Brisbane",2022
+1324637,2022-12-24,"Hobart Hurricanes","Melbourne Renegades","Hobart Hurricanes",NA,8,NA,"Bellerive Oval, Hobart","Hobart Hurricanes","bat","Hobart Hurricanes","Hobart",2022
+1324638,2022-12-26,"Melbourne Stars","Sydney Sixers","Sydney Sixers",NA,NA,7,"Sydney Cricket Ground, Sydney","Sydney Sixers","field","Sydney Sixers","Sydney",2022
+1324639,2022-12-26,"Adelaide Strikers","Perth Scorchers","Perth Scorchers",NA,NA,3,"Perth Stadium","Adelaide Strikers","bat","Perth Scorchers","Perth",2022
+1324640,2022-12-27,"Brisbane Heat","Sydney Thunder","Sydney Thunder",NA,NA,10,"Sydney Showground Stadium","Brisbane Heat","bat","Sydney Thunder","Sydney",2022
+1324641,2022-12-28,"Sydney Sixers","Melbourne Renegades","Sydney Sixers",NA,34,NA,"Sydney Cricket Ground, Sydney","Melbourne Renegades","field","Sydney Sixers","Sydney",2022
+1324642,2022-12-29,"Sydney Thunder","Brisbane Heat","Sydney Thunder",NA,11,NA,"Carrara Oval","Brisbane Heat","field","Brisbane Heat","Gold Coast",2022
+1324643,2022-12-29,"Melbourne Stars","Perth Scorchers","Perth Scorchers",NA,NA,6,"Perth Stadium","Melbourne Stars","bat","Perth Scorchers","Perth",2022
+1324644,2022-12-30,"Melbourne Renegades","Sydney Sixers","Sydney Sixers",NA,NA,6,"GMHBA Stadium, South Geelong, Victoria","Melbourne Renegades","bat","Melbourne Renegades","Geelong",2022
+1324645,2022-12-31,"Sydney Thunder","Hobart Hurricanes","Sydney Thunder",NA,62,NA,"Lavington Sports Oval, Albury","Hobart Hurricanes","field",NA,"Albury",2022
+1324646,2022-12-31,"Melbourne Stars","Adelaide Strikers","Melbourne Stars",NA,8,NA,"Adelaide Oval","Melbourne Stars","bat","Adelaide Strikers","Adelaide",2022
+1324647,2023-01-01,"Melbourne Renegades","Perth Scorchers","Perth Scorchers",NA,NA,5,"Docklands Stadium, Melbourne","Melbourne Renegades","bat","Melbourne Renegades","Melbourne",2022
+1324648,2023-01-01,"Brisbane Heat","Sydney Sixers","Brisbane Heat",NA,15,NA,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Brisbane Heat","bat","Brisbane Heat","Brisbane",2022
+1324649,2023-01-02,"Adelaide Strikers","Hobart Hurricanes","Hobart Hurricanes",NA,NA,7,"Bellerive Oval, Hobart","Adelaide Strikers","bat","Hobart Hurricanes","Hobart",2022
+1324650,2023-01-03,"Melbourne Renegades","Melbourne Stars","Melbourne Renegades",NA,33,NA,"Melbourne Cricket Ground","Melbourne Stars","field","Melbourne Stars","Melbourne",2022
+1324652,2023-01-04,"Perth Scorchers","Sydney Thunder","Sydney Thunder",NA,NA,6,"Perth Stadium","Perth Scorchers","bat","Perth Scorchers","Perth",2022
+1324653,2023-01-05,"Hobart Hurricanes","Adelaide Strikers","Adelaide Strikers",NA,NA,7,"Adelaide Oval","Adelaide Strikers","field","Adelaide Strikers","Adelaide",2022
+1324654,2023-01-06,"Melbourne Stars","Sydney Sixers","Sydney Sixers",NA,NA,6,"Melbourne Cricket Ground","Sydney Sixers","field","Melbourne Stars","Melbourne",2022
+1324655,2023-01-07,"Hobart Hurricanes","Melbourne Renegades","Melbourne Renegades",NA,NA,6,"Docklands Stadium, Melbourne","Melbourne Renegades","field","Melbourne Renegades","Melbourne",2022
+1324656,2023-01-07,"Brisbane Heat","Perth Scorchers","Perth Scorchers",NA,NA,7,"Perth Stadium","Perth Scorchers","field","Perth Scorchers","Perth",2022
+1324657,2023-01-08,"Sydney Thunder","Sydney Sixers","Sydney Sixers",NA,NA,7,"Sydney Showground Stadium","Sydney Sixers","field","Sydney Thunder","Sydney",2022
+1324658,2023-01-09,"Melbourne Stars","Hobart Hurricanes","Hobart Hurricanes",NA,NA,2,"Bellerive Oval, Hobart","Hobart Hurricanes","field","Hobart Hurricanes","Hobart",2022
+1324659,2023-01-10,"Adelaide Strikers","Melbourne Renegades","Adelaide Strikers",NA,20,NA,"Adelaide Oval","Melbourne Renegades","field","Adelaide Strikers","Adelaide",2022
+1324660,2023-01-11,"Brisbane Heat","Perth Scorchers","Perth Scorchers",NA,NA,8,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Perth Scorchers","field","Brisbane Heat","Brisbane",2022
+1324661,2023-01-12,"Adelaide Strikers","Melbourne Stars","Melbourne Stars",NA,NA,9,"Melbourne Cricket Ground","Melbourne Stars","field","Melbourne Stars","Melbourne",2022
+1324662,2023-01-13,"Sydney Thunder","Perth Scorchers","Perth Scorchers",NA,NA,9,"Sydney Showground Stadium","Perth Scorchers","field","Sydney Thunder","Sydney",2022
+1324663,2023-01-14,"Brisbane Heat","Adelaide Strikers","Brisbane Heat",NA,17,NA,"Adelaide Oval","Adelaide Strikers","field","Adelaide Strikers","Adelaide",2022
+1324664,2023-01-14,"Melbourne Renegades","Melbourne Stars","Melbourne Renegades",NA,6,NA,"Docklands Stadium, Melbourne","Melbourne Stars","field","Melbourne Renegades","Melbourne",2022
+1324665,2023-01-15,"Sydney Thunder","Hobart Hurricanes","Hobart Hurricanes",NA,NA,5,"Bellerive Oval, Hobart","Sydney Thunder","bat","Hobart Hurricanes","Hobart",2022
+1324666,2023-01-15,"Sydney Sixers","Perth Scorchers","Sydney Sixers",NA,6,NA,"Sydney Cricket Ground, Sydney","Perth Scorchers","field","Sydney Sixers","Sydney",2022
+1324667,2023-01-16,"Melbourne Stars","Brisbane Heat","Brisbane Heat",NA,NA,3,"Melbourne Cricket Ground","Brisbane Heat","field","Melbourne Stars","Melbourne",2022
+1324668,2023-01-17,"Sydney Sixers","Adelaide Strikers","Sydney Sixers",NA,59,NA,"International Sports Stadium, Coffs Harbour","Adelaide Strikers","field",NA,"Coffs Harbour",2022
+1324669,2023-01-18,"Hobart Hurricanes","Perth Scorchers","Perth Scorchers",NA,NA,7,"Perth Stadium","Hobart Hurricanes","bat","Perth Scorchers","Perth",2022
+1324670,2023-01-19,"Melbourne Renegades","Sydney Thunder","Sydney Thunder",NA,NA,8,"Manuka Oval, Canberra","Melbourne Renegades","bat","Sydney Thunder","Canberra",2022
+1324671,2023-01-20,"Adelaide Strikers","Perth Scorchers","Perth Scorchers",NA,NA,7,"Adelaide Oval","Adelaide Strikers","bat","Adelaide Strikers","Adelaide",2022
+1324672,2023-01-20,"Brisbane Heat","Hobart Hurricanes","Brisbane Heat",NA,12,NA,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Hobart Hurricanes","field","Brisbane Heat","Brisbane",2022
+1324673,2023-01-21,"Sydney Sixers","Sydney Thunder","Sydney Sixers",NA,125,NA,"Sydney Cricket Ground, Sydney","Sydney Sixers","bat","Sydney Sixers","Sydney",2022
+1324674,2023-01-22,"Brisbane Heat","Melbourne Stars","Brisbane Heat",NA,4,NA,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Brisbane Heat","bat","Brisbane Heat","Brisbane",2022
+1324675,2023-01-22,"Perth Scorchers","Melbourne Renegades","Perth Scorchers",NA,10,NA,"Perth Stadium","Melbourne Renegades","field","Perth Scorchers","Perth",2022
+1324676,2023-01-23,"Sydney Sixers","Hobart Hurricanes","Sydney Sixers",NA,24,NA,"Bellerive Oval, Hobart","Hobart Hurricanes","field","Hobart Hurricanes","Hobart",2022
+1324677,2023-01-24,"Adelaide Strikers","Melbourne Renegades","Melbourne Renegades",NA,NA,6,"Docklands Stadium, Melbourne","Melbourne Renegades","field","Melbourne Renegades","Melbourne",2022
+1324678,2023-01-25,"Hobart Hurricanes","Brisbane Heat","Hobart Hurricanes",NA,2,NA,"University of Tasmania Stadium, Launceston","Brisbane Heat","field","Hobart Hurricanes","Launceston",2022
+1324679,2023-01-25,"Melbourne Stars","Sydney Thunder","Sydney Thunder",NA,NA,3,"Melbourne Cricket Ground","Sydney Thunder","field","Melbourne Stars","Melbourne",2022
+1324680,2023-01-27,"Brisbane Heat","Sydney Thunder","Brisbane Heat",NA,8,NA,"Sydney Showground Stadium","Sydney Thunder","field","Sydney Thunder","Sydney",2022
+1324681,2023-01-28,"Sydney Sixers","Perth Scorchers","Perth Scorchers",NA,NA,7,"Perth Stadium","Sydney Sixers","bat","Perth Scorchers","Perth",2022
+1324682,2023-01-29,"Melbourne Renegades","Brisbane Heat","Brisbane Heat",NA,NA,7,"Docklands Stadium, Melbourne","Brisbane Heat","field","Melbourne Renegades","Melbourne",2022
+1324683,2023-02-02,"Sydney Sixers","Brisbane Heat","Brisbane Heat",NA,NA,4,"Sydney Cricket Ground, Sydney","Sydney Sixers","bat","Sydney Sixers","Sydney",2022
+1324684,2023-02-04,"Brisbane Heat","Perth Scorchers","Perth Scorchers",NA,NA,5,"Perth Stadium","Brisbane Heat","bat","Perth Scorchers","Perth",2022

@@ -1,0 +1,61 @@
+"match_id","date","team1","team2","winner","result","winner_by_runs","winner_by_wickets","venue","toss_winner","toss_decision","home_team","city","season"
+1226826,2021-01-08,"Adelaide Strikers","Melbourne Renegades","Melbourne Renegades",NA,NA,6,"Adelaide Oval","Adelaide Strikers","bat","Adelaide Strikers","Adelaide",2020
+1226827,2021-01-24,"Hobart Hurricanes","Sydney Sixers","Hobart Hurricanes",NA,7,NA,"Melbourne Cricket Ground","Sydney Sixers","field",NA,"Melbourne",2020
+1226828,2020-12-12,"Melbourne Stars","Sydney Thunder","Melbourne Stars",NA,22,NA,"Manuka Oval, Canberra","Melbourne Stars","bat","Sydney Thunder","Canberra",2020
+1226829,2021-01-06,"Perth Scorchers","Sydney Sixers","Perth Scorchers",NA,86,NA,"Perth Stadium","Sydney Sixers","field","Perth Scorchers","Perth",2020
+1226830,2020-12-19,"Melbourne Renegades","Hobart Hurricanes","Hobart Hurricanes",NA,NA,6,"Bellerive Oval, Hobart","Hobart Hurricanes","field","Hobart Hurricanes","Hobart",2020
+1226831,2020-12-22,"Perth Scorchers","Sydney Thunder","Sydney Thunder",NA,NA,7,"Manuka Oval, Canberra","Sydney Thunder","field","Sydney Thunder","Canberra",2020
+1226832,2021-01-02,"Sydney Sixers","Brisbane Heat","Brisbane Heat",NA,NA,4,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Sydney Sixers","bat","Brisbane Heat","Brisbane",2020
+1226833,2021-01-05,"Adelaide Strikers","Melbourne Renegades","Adelaide Strikers",NA,60,NA,"Adelaide Oval","Adelaide Strikers","bat","Adelaide Strikers","Adelaide",2020
+1226834,2021-01-22,"Perth Scorchers","Hobart Hurricanes","Perth Scorchers",NA,22,NA,"Docklands Stadium, Melbourne","Perth Scorchers","bat",NA,"Melbourne",2020
+1226835,2021-01-07,"Brisbane Heat","Melbourne Stars","Brisbane Heat",NA,17,NA,"Carrara Oval","Melbourne Stars","field","Brisbane Heat","Gold Coast",2020
+1226836,2021-01-25,"Adelaide Strikers","Sydney Thunder","Sydney Thunder",NA,NA,9,"Adelaide Oval","Sydney Thunder","field","Adelaide Strikers","Adelaide",2020
+1226837,2020-12-13,"Sydney Sixers","Melbourne Renegades","Sydney Sixers",NA,145,NA,"Bellerive Oval, Hobart","Melbourne Renegades","field",NA,"Hobart",2020
+1226838,2021-01-19,"Perth Scorchers","Brisbane Heat","Perth Scorchers",NA,59,NA,"Docklands Stadium, Melbourne","Brisbane Heat","field",NA,"Melbourne",2020
+1226839,2021-01-15,"Melbourne Stars","Adelaide Strikers","Melbourne Stars",NA,111,NA,"Melbourne Cricket Ground","Adelaide Strikers","field","Melbourne Stars","Melbourne",2020
+1226840,2021-01-18,"Sydney Thunder","Hobart Hurricanes","Hobart Hurricanes",NA,NA,6,"Manuka Oval, Canberra","Hobart Hurricanes","field","Sydney Thunder","Canberra",2020
+1226841,2020-12-12,"Perth Scorchers","Melbourne Renegades","Melbourne Renegades",NA,NA,7,"Bellerive Oval, Hobart","Perth Scorchers","bat",NA,"Hobart",2020
+1226842,2021-01-03,"Adelaide Strikers","Sydney Sixers","Sydney Sixers",NA,NA,7,"Carrara Oval","Sydney Sixers","field",NA,"Gold Coast",2020
+1226843,2021-01-14,"Melbourne Renegades","Brisbane Heat","Brisbane Heat",NA,NA,5,"Manuka Oval, Canberra","Brisbane Heat","field",NA,"Canberra",2020
+1226844,2021-01-02,"Hobart Hurricanes","Melbourne Stars","Hobart Hurricanes",NA,21,NA,"Bellerive Oval, Hobart","Melbourne Stars","field","Hobart Hurricanes","Hobart",2020
+1226845,2020-12-28,"Adelaide Strikers","Perth Scorchers","Adelaide Strikers",NA,71,NA,"Adelaide Oval","Perth Scorchers","field","Adelaide Strikers","Adelaide",2020
+1226846,2020-12-26,"Melbourne Stars","Sydney Sixers","Sydney Sixers",NA,NA,1,"Carrara Oval","Sydney Sixers","field",NA,"Gold Coast",2020
+1226847,2021-01-24,"Adelaide Strikers","Sydney Thunder","Adelaide Strikers",NA,6,NA,"Adelaide Oval","Adelaide Strikers","bat","Adelaide Strikers","Adelaide",2020
+1226848,2021-01-23,"Brisbane Heat","Melbourne Renegades","Brisbane Heat",NA,26,NA,"Docklands Stadium, Melbourne","Brisbane Heat","bat","Melbourne Renegades","Melbourne",2020
+1226849,2021-01-23,"Perth Scorchers","Melbourne Stars","Perth Scorchers",NA,11,NA,"Melbourne Cricket Ground","Melbourne Stars","field","Melbourne Stars","Melbourne",2020
+1226850,2020-12-13,"Hobart Hurricanes","Adelaide Strikers","Hobart Hurricanes",NA,11,NA,"Bellerive Oval, Hobart","Adelaide Strikers","field","Hobart Hurricanes","Hobart",2020
+1226851,2021-01-04,"Sydney Thunder","Brisbane Heat","Brisbane Heat",NA,NA,5,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Sydney Thunder","bat","Brisbane Heat","Brisbane",2020
+1226852,2020-12-10,"Hobart Hurricanes","Sydney Sixers","Hobart Hurricanes",NA,16,NA,"Bellerive Oval, Hobart","Sydney Sixers","field","Hobart Hurricanes","Hobart",2020
+1226853,2021-01-03,"Perth Scorchers","Melbourne Renegades","Perth Scorchers",NA,96,NA,"Perth Stadium","Melbourne Renegades","field","Perth Scorchers","Perth",2020
+1226854,2020-12-29,"Sydney Thunder","Melbourne Stars","Sydney Thunder",NA,75,NA,"Manuka Oval, Canberra","Melbourne Stars","field","Sydney Thunder","Canberra",2020
+1226855,2021-01-10,"Brisbane Heat","Sydney Sixers","Sydney Sixers",NA,NA,3,"Carrara Oval","Sydney Sixers","field","Brisbane Heat","Gold Coast",2020
+1226856,2021-01-01,"Melbourne Renegades","Sydney Thunder","Sydney Thunder",NA,7,NA,"Carrara Oval","Sydney Thunder","field",NA,"Gold Coast",2020
+1226857,2021-01-12,"Hobart Hurricanes","Perth Scorchers","Perth Scorchers",NA,NA,9,"Perth Stadium","Hobart Hurricanes","bat","Perth Scorchers","Perth",2020
+1226858,2021-01-26,"Melbourne Stars","Sydney Sixers","Sydney Sixers",NA,NA,5,"Melbourne Cricket Ground","Sydney Sixers","field","Melbourne Stars","Melbourne",2020
+1226859,2021-01-21,"Adelaide Strikers","Brisbane Heat","Adelaide Strikers",NA,82,NA,"Adelaide Oval","Adelaide Strikers","bat","Adelaide Strikers","Adelaide",2020
+1226860,2021-01-26,"Melbourne Renegades","Hobart Hurricanes","Melbourne Renegades",NA,11,NA,"Melbourne Cricket Ground","Hobart Hurricanes","field","Melbourne Renegades","Melbourne",2020
+1226861,2021-01-13,"Sydney Thunder","Sydney Sixers","Sydney Sixers",NA,NA,5,"Manuka Oval, Canberra","Sydney Sixers","field","Sydney Thunder","Canberra",2020
+1226862,2021-01-26,"Brisbane Heat","Perth Scorchers","Brisbane Heat",NA,6,NA,"Adelaide Oval","Perth Scorchers","field",NA,"Adelaide",2020
+1226863,2020-12-15,"Hobart Hurricanes","Adelaide Strikers","Adelaide Strikers",NA,NA,5,"Aurora Stadium, Launceston","Adelaide Strikers","field","Hobart Hurricanes","Launceston",2020
+1226864,2021-01-17,"Melbourne Renegades","Melbourne Stars","Melbourne Stars",NA,NA,6,"Melbourne Cricket Ground","Melbourne Renegades","bat","Melbourne Stars","Melbourne",2020
+1226865,2021-01-16,"Perth Scorchers","Sydney Sixers","Sydney Sixers",NA,NA,7,"Manuka Oval, Canberra","Perth Scorchers","bat","Sydney Sixers","Canberra",2020
+1226866,2020-12-14,"Brisbane Heat","Sydney Thunder","Sydney Thunder",NA,NA,4,"Manuka Oval, Canberra","Brisbane Heat","bat","Sydney Thunder","Canberra",2020
+1226868,2020-12-27,"Hobart Hurricanes","Brisbane Heat","Brisbane Heat",NA,NA,4,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Brisbane Heat","field","Brisbane Heat","Brisbane",2020
+1226869,2021-01-20,"Melbourne Stars","Melbourne Renegades","Melbourne Renegades",NA,NA,5,"Docklands Stadium, Melbourne","Melbourne Stars","bat","Melbourne Renegades","Melbourne",2020
+1226870,2020-12-31,"Adelaide Strikers","Perth Scorchers","Perth Scorchers",NA,NA,7,"Adelaide Oval","Perth Scorchers","field","Adelaide Strikers","Adelaide",2020
+1226871,2021-01-07,"Sydney Thunder","Hobart Hurricanes","Sydney Thunder",NA,39,NA,"Perth Stadium","Hobart Hurricanes","field",NA,"Perth",2020
+1226872,2020-12-11,"Brisbane Heat","Melbourne Stars","Melbourne Stars",NA,NA,6,"Manuka Oval, Canberra","Melbourne Stars","field",NA,"Canberra",2020
+1226873,2020-12-20,"Sydney Sixers","Adelaide Strikers","Sydney Sixers",NA,38,NA,"Bellerive Oval, Hobart","Adelaide Strikers","field",NA,"Hobart",2020
+1226874,2020-12-26,"Sydney Thunder","Melbourne Renegades","Sydney Thunder",NA,129,NA,"Manuka Oval, Canberra","Melbourne Renegades","field","Sydney Thunder","Canberra",2020
+1226875,2020-12-30,"Hobart Hurricanes","Brisbane Heat","Hobart Hurricanes",NA,1,NA,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Brisbane Heat","field","Brisbane Heat","Brisbane",2020
+1226876,2021-01-11,"Melbourne Stars","Adelaide Strikers","Adelaide Strikers",NA,NA,5,"Adelaide Oval","Melbourne Stars","bat","Adelaide Strikers","Adelaide",2020
+1226877,2020-12-29,"Melbourne Renegades","Sydney Sixers","Sydney Sixers",NA,NA,2,"Carrara Oval","Melbourne Renegades","bat",NA,"Gold Coast",2020
+1226878,2021-01-09,"Perth Scorchers","Sydney Thunder","Perth Scorchers",NA,17,NA,"Perth Stadium","Sydney Thunder","field","Perth Scorchers","Perth",2020
+1226879,2021-01-04,"Melbourne Stars","Hobart Hurricanes","Melbourne Stars",NA,10,NA,"Bellerive Oval, Hobart","Hobart Hurricanes","field","Hobart Hurricanes","Hobart",2020
+1226880,2021-01-22,"Sydney Thunder","Sydney Sixers","Sydney Thunder",NA,46,NA,"Adelaide Oval","Sydney Sixers","field",NA,"Adelaide",2020
+1226881,2020-12-23,"Adelaide Strikers","Brisbane Heat","Adelaide Strikers",NA,2,NA,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Brisbane Heat","field","Brisbane Heat","Brisbane",2020
+1226882,2021-02-04,"Perth Scorchers","Brisbane Heat","Perth Scorchers",NA,49,NA,"Manuka Oval, Canberra","Brisbane Heat","field",NA,"Canberra",2020
+1226883,2021-01-29,"Adelaide Strikers","Brisbane Heat","Brisbane Heat",NA,NA,6,"Brisbane Cricket Ground, Woolloongabba, Brisbane","Adelaide Strikers","bat","Brisbane Heat","Brisbane",2020
+1226884,2021-01-30,"Perth Scorchers","Sydney Sixers","Sydney Sixers",NA,NA,9,"Manuka Oval, Canberra","Perth Scorchers","bat","Sydney Sixers","Canberra",2020
+1226885,2021-01-31,"Sydney Thunder","Brisbane Heat","Brisbane Heat",NA,NA,7,"Manuka Oval, Canberra","Brisbane Heat","field","Sydney Thunder","Canberra",2020
+1226886,2021-02-06,"Sydney Sixers","Perth Scorchers","Sydney Sixers",NA,27,NA,"Sydney Cricket Ground, Sydney","Perth Scorchers","field","Sydney Sixers","Sydney",2020
