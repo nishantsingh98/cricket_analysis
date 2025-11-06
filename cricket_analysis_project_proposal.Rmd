@@ -45,6 +45,7 @@ excluded_match_ids <- match_data %>%
 clean_match_data <- match_data %>% 
   filter(!match_id %in% excluded_match_ids)
 
+write_csv(clean_match_data, '/Users/nishantsingh/Desktop/University/T5/Research Project A/cricket_analysis/data/df_match_data')
 ```
 
 # Toss analysis 
