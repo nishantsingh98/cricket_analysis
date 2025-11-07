@@ -1,7 +1,7 @@
 ---
 title: "Data Cleaning and EDA"
 author: "Nishant Singh"
-date: "2025-11-06"
+date: "2025-11-01"
 output: 
   html_document:
     number_sections: true
@@ -19,9 +19,12 @@ df_ball_by_ball_data <- read_csv("./data/cleaned_ball_by_ball_data.csv")
 (unique_match_venue <- unique(df_match_data$venue))
 ```
 
+
+```{r data_cleaning_venue, echo=FALSE}
+
 ## Data Cleaning
 ## Venue 
-```{r echo=FALSE}
+
 ## Extract location from Venue column 
 
 df_venues<- data.frame(
@@ -74,12 +77,12 @@ df_venues<- data.frame(
   stringsAsFactors = FALSE
 )
 
-unique(df_venues$city)
+# unique(df_venues$city)
 
 
 ```
 
-```{r}
+```{r data_cleaning_2020_mistake, echo=FALSE, include=FALSE}
 # Create data frame with stadium and city
 match_joined <- left_join(df_match_data, df_venues, by = "venue")
 ball_joined <- left_join(df_ball_by_ball_data, df_venues, by = "venue")
@@ -97,8 +100,12 @@ temp <- match_joined$match_id[idx1]
 match_joined$match_id[idx1] <- match_joined$match_id[idx2]
 match_joined$match_id[idx2] <- temp
 ```
-## Clean Match data to different Season
-```{r match_clean_to_season, echo=FALSE, include=FALSE}
+
+
+```{r data_cleaning_match_to_season, echo=FALSE, include=FALSE}
+
+ ###################################Need to fix this later ###################################
+
 # Sort by match_id
 match_joined <- match_joined[order(match_joined$match_id), ]
 
@@ -157,8 +164,8 @@ season_2024 <- read_csv("./data/season_2024.csv")
 
 # EDA
 
-## Match Data
-```{r}
+## Seasonal Analysis of Matches (Matches Played Only)
+```{r eda_seasonal_match_1}
 # Per season analysis 
 ## Number of Matches in a season played by different teams
 ### Note the counts include the actual matches played ignoring all games which, are draws, or were decided by a bowl-off, or were ###rained out
@@ -178,34 +185,8 @@ ggplot(season_match_counts, aes(x = factor(season), y = match_count)) +
 
 ```
 
-
-```{r}
-## Number of teams that have won the match
-
-# Count of matches won per team per season
-season_team_wins <- match_joined %>%
-  group_by(season, winner) %>%
-  summarise(matches_won = n(), .groups = "drop")
-
-sum(season_team_wins$matches_won)
-
-# interactive stacked bar plot
-p <- ggplot(season_team_wins, aes(x = factor(season), y = matches_won, fill = winner, text = paste("Team:", winner, "<br>Matches Won:", matches_won))) +
-  geom_bar(stat = "identity", position = "stack") +
-  geom_text(aes(label = matches_won), position = position_stack(vjust = 0.5), size = 3) +
-  labs(
-    title = "Number of Matches Won by Each Team per Season",
-    x = "Season",
-    y = "Matches Won"
-  ) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-ggplotly(p, tooltip = "text")
-```
-
-
-```{r}
+## Winners of each season
+```{r eda_trophies_won}
 # Perth Scorchers have won the most BBL trophies with a record five titles 
   
 # Highlight Perth Scorchers' total wins
@@ -222,85 +203,51 @@ season_winners <- season_summary_df %>%
 # Count of trophies won by each team
 trophy_counts <- season_winners %>%
   group_by(season_winner) %>%
-  summarise(trophies_won = n(), .groups = "drop") %>%
+  summarise(
+    trophies_won = n(),
+    winning_years = paste(sort(season), collapse = ", "),
+    .groups = "drop"
+  ) %>%
   arrange(desc(trophies_won))
 
 trophy_counts
 
 ```
 
-```{r toss_analysis_perth_scorchers}
-# toss analysis
+```{r eda_seasonal_match_2, echo=FALSE}
+## Number of teams that have won the match
 
-# Total matches played by Perth Scorchers
-perth_total_matches <- match_joined %>%
-  filter(team1 == "Perth Scorchers" | team2 == "Perth Scorchers") %>%
-  group_by(season) %>%
-  summarise(total_matches = n(), .groups = "drop")
+# Count of matches won per team per season
+season_team_wins <- match_joined %>%
+  group_by(season, winner) %>%
+  summarise(matches_won = n(), .groups = "drop")
 
-# Matches won after winning the toss, split by toss decision
-perth_toss_wins <- match_joined %>%
-  filter(toss_winner == "Perth Scorchers") %>%
-  group_by(season, toss_decision) %>%
-  summarise(matches_won = sum(winner == "Perth Scorchers"),
-            tosses_won = n(),
-            .groups = "drop") %>%
-  mutate(win_rate = round(matches_won / tosses_won * 100, 1))
+# verify the logic  
+# sum(season_team_wins$matches_won)
 
-# Join total matches for reference
-perth_toss_wins <- perth_toss_wins %>%
-  left_join(perth_total_matches, by = "season") %>%
-  mutate(percentage_of_total = round(matches_won / total_matches * 100, 1))
-
-# Determine which decision was better per season
-best_decision <- perth_toss_wins %>%
-  group_by(season) %>%
-  slice_max(win_rate, n = 1, with_ties = FALSE) %>%
-  select(season, best_decision = toss_decision, best_win_rate = win_rate)
-
-# Merge back to annotate
-perth_toss_wins <- perth_toss_wins %>%
-  left_join(best_decision, by = "season")
-
-# Interactive bar chart
-p <- ggplot(perth_toss_wins,
-            aes(x = factor(season), y = win_rate, fill = toss_decision,
-                text = paste("Season:", season,
-                             "<br>Toss Decision:", toss_decision,
-                             "<br>Matches Won:", matches_won,
-                             "<br>Tosses Won:", tosses_won,
-                             "<br>Win Rate:", win_rate, "%",
-                             "<br>Total Matches:", total_matches,
-                             "<br>Better Option This Season:", best_decision))) +
-  geom_bar(stat = "identity", position = "dodge") +
-  geom_text(aes(label = paste0(win_rate, "%")),
-            position = position_dodge(width = 0.9), vjust = -0.5, size = 3) +
+# interactive stacked bar plot
+p <- ggplot(season_team_wins, aes(x = factor(season), y = matches_won, fill = winner, 
+                                  text = paste(
+                                    "Team:", winner,
+                                    "<br>Matches Won:", matches_won))) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(aes(label = matches_won), position = position_stack(vjust = 0.5), size = 3) +
   labs(
-    title = "Perth Scorchers: Toss Decision Success Rate (Bat vs Field) per Season",
+    title = "Number of Matches Won by Each Team per Season",
     x = "Season",
-    y = "Win Rate (%)",
-    fill = "Toss Decision"
+    y = "Matches Won",
+    fill="Team"
   ) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ggplotly(p, tooltip = "text")
-
-# Overall comparison summary
-overall_summary <- perth_toss_wins %>%
-  group_by(toss_decision) %>%
-  summarise(total_wins = sum(matches_won),
-            total_tosses = sum(tosses_won),
-            overall_win_rate = round(total_wins / total_tosses * 100, 1),
-            .groups = "drop")
-
-print(overall_summary)
-
-
 ```
-## 6/8 teams won their matches if they chose to field first
+
+
+## Toss Analysis
 ```{r toss_analysis_all_teams}
-library(dplyr)
+## 6/8 teams won their matches if they chose to field first
 
 # Get list of all team names
 teams <- unique(c(match_joined$team1, match_joined$team2))
@@ -385,79 +332,181 @@ ggplotly(p_toss_analysis)
 
 ```
 
+## 
+```{r toss_analysis_perth_scorchers}
+# toss analysis
 
-```{r}
-# Total matches played per season by Perth Scorchers
+# Total matches played by Perth Scorchers
 perth_total_matches <- match_joined %>%
   filter(team1 == "Perth Scorchers" | team2 == "Perth Scorchers") %>%
   group_by(season) %>%
   summarise(total_matches = n(), .groups = "drop")
 
-# Matches won after winning toss, by toss decision
+# Matches won after winning the toss, split by toss decision
 perth_toss_wins <- match_joined %>%
   filter(toss_winner == "Perth Scorchers") %>%
   group_by(season, toss_decision) %>%
-  summarise(matches_won = sum(winner == "Perth Scorchers"), .groups = "drop")
+  summarise(matches_won = sum(winner == "Perth Scorchers"),
+            tosses_won = n(),
+            .groups = "drop") %>%
+  mutate(win_rate = round(matches_won / tosses_won * 100, 1))
 
-# Combine total matches for tooltip
+# Join total matches for reference
 perth_toss_wins <- perth_toss_wins %>%
   left_join(perth_total_matches, by = "season") %>%
   mutate(percentage_of_total = round(matches_won / total_matches * 100, 1))
 
-# Interactive stacked bar chart
+# Determine which decision was better per season
+best_decision <- perth_toss_wins %>%
+  group_by(season) %>%
+  slice_max(win_rate, n = 1, with_ties = FALSE) %>%
+  select(season, best_decision = toss_decision, best_win_rate = win_rate)
+
+# Merge back to annotate
+perth_toss_wins <- perth_toss_wins %>%
+  left_join(best_decision, by = "season")
+
+# Interactive bar chart
 p <- ggplot(perth_toss_wins,
-            aes(x = factor(season), y = matches_won, fill = toss_decision,
+            aes(x = factor(season), y = win_rate, fill = toss_decision,
                 text = paste("Season:", season,
                              "<br>Toss Decision:", toss_decision,
                              "<br>Matches Won:", matches_won,
+                             "<br>Tosses Won:", tosses_won,
+                             "<br>Win Rate:", win_rate, "%",
                              "<br>Total Matches:", total_matches,
-                             "<br>% of Total Matches Won:", percentage_of_total, "%"))) +
-  geom_bar(stat = "identity") +
+                             "<br>Better Option This Season:", best_decision))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = paste0(win_rate, "%")),
+            position = position_dodge(width = 0.9), vjust = -0.5, size = 3) +
   labs(
-    title = "Perth Scorchers: Wins After Winning Toss (Bat vs Field) per Season",
+    title = "Perth Scorchers: Toss Decision Success Rate (Bat vs Field) per Season",
     x = "Season",
-    y = "Matches Won",
+    y = "Win Rate (%)",
     fill = "Toss Decision"
   ) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ggplotly(p, tooltip = "text")
+
+# Overall comparison summary
+overall_summary <- perth_toss_wins %>%
+  group_by(toss_decision) %>%
+  summarise(total_wins = sum(matches_won),
+            total_tosses = sum(tosses_won),
+            overall_win_rate = round(total_wins / total_tosses * 100, 1),
+            .groups = "drop")
+
+print(overall_summary)
 ```
 
 
-<!-- ```{r} -->
-<!-- # Toss decision effectiveness per season -->
-<!-- season_toss_effectiveness <- match_joined %>% -->
-<!--   filter(winner == toss_winner) %>%  # Only matches won by toss winner -->
-<!--   group_by(season, toss_winner, toss_decision) %>% -->
-<!--   summarise(matches_won = n(), .groups = "drop") -->
+## Home Team Advantage Over Seasons
+```{r home_team_advantage}
+# Home Team Advantage Over Seasons
 
-<!-- # Interactive stacked bar chart: color = team, show toss decision in tooltip -->
-<!-- p <- ggplot(season_toss_effectiveness, -->
-<!--             aes(x = factor(season), y = matches_won, fill = toss_winner, -->
-<!--                 text = paste("Team:", toss_winner, -->
-<!--                              "<br>Toss Decision:", toss_decision, -->
-<!--                              "<br>Matches Won:", matches_won))) + -->
-<!--   geom_bar(stat = "identity", position = "stack") + -->
-<!--   labs( -->
-<!--     title = "Matches Won After Winning Toss per Season", -->
-<!--     x = "Season", -->
-<!--     y = "Matches Won", -->
-<!--     fill = "Team" -->
-<!--   ) + -->
-<!--   theme_minimal() + -->
-<!--   theme(axis.text.x = element_text(angle = 45, hjust = 1)) -->
+home_advantage_season <- match_joined %>%
+  filter(!is.na(home_team)) %>%
+  mutate(home_win = ifelse(winner == home_team, "Yes", "No")) %>%
+  group_by(season, home_win) %>%
+  summarise(matches = n(), .groups = "drop")
 
-<!-- # Convert to interactive Plotly chart -->
-<!-- ggplotly(p, tooltip = "text") -->
-<!-- ``` -->
+p_home <- ggplot(home_advantage_season, aes(x = factor(season), y = matches, fill = home_win)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(aes(label = matches), position = position_stack(vjust = 0.5), size = 3, color = "white") +
+  scale_fill_manual(values = c("Yes" = "steelblue", "No" = "#ff7f0e")) +
+  labs(
+    title = "Home Team Advantage Across Seasons",
+    x = "Season",
+    y = "Matches Played",
+    fill = "Home Team Won?"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    plot.title = element_text(face = "bold", size = 14)
+  )
+
+ggplotly(p_home)
+
+```
+## Home vs. Away Performance Difference
+```{r home_team_advantage_performance_difference}
+# Home vs. Away Performance Difference
+home_away_comparison_fixed <- match_joined %>%
+  pivot_longer(
+    cols = c(team1, team2),
+    names_to = "match_role",
+    values_to = "team"
+  ) %>%
+  filter(!is.na(winner)) %>%
+  mutate(
+    is_home = ifelse(team == home_team, "Home", "Away"),
+    win_flag = ifelse(team == winner, 1, 0)
+  ) %>%
+  group_by(team, is_home) %>%
+  summarise(
+    win_rate = mean(win_flag, na.rm = TRUE) * 100,
+    .groups = "drop"
+  ) %>%
+  pivot_wider(names_from = is_home, values_from = win_rate, values_fill = 0) %>%
+  mutate(
+    Advantage_pct = round(Home - Away, 1)
+  ) %>%
+  arrange(desc(Advantage_pct))
+
+print(home_away_comparison_fixed)
+
+
+# Toss × Home Interaction
+toss_home_effect <- match_joined %>%
+  filter(!is.na(home_team) & !is.na(winner)) %>%
+  mutate(
+    Home_Win = ifelse(home_team == winner, "Yes", "No"),
+    Toss_Home = ifelse(home_team == toss_winner, "Yes", "No")
+  ) %>%
+  group_by(Toss_Home, toss_decision, Home_Win) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  group_by(Toss_Home, toss_decision) %>%
+  mutate(percent = round(count / sum(count) * 100, 1)) %>%
+  ungroup()
+
+toss_home_win_summary <- toss_home_effect %>%
+  filter(Home_Win == "Yes") %>%
+  select(Toss_Home, toss_decision, Home_Win_Rate = percent)
+
+print(toss_home_win_summary)
+
+
+# Venue Bias (Home Win Rate by Venue)
+venue_bias_summary <- match_joined %>%
+  filter(!is.na(home_team) & !is.na(winner)) %>%
+  mutate(Home_Win = ifelse(home_team == winner, 1, 0)) %>%
+  group_by(venue) %>%
+  summarise(
+    Matches = n(),
+    Home_Win_Rate = round(mean(Home_Win, na.rm = TRUE) * 100, 1)
+  ) %>%
+  arrange(desc(Home_Win_Rate))
+
+print(venue_bias_summary)
+```
 
 
 ```{r}
-# home team analysis 
 
 ```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+
 
 ```{r}
 # 1. City wise match analysis 
@@ -466,6 +515,8 @@ ggplotly(p, tooltip = "text")
 
 
 ```
+
+
 
 
 ## Ball by Ball Data
@@ -483,8 +534,5 @@ ggplotly(p, tooltip = "text")
 # Batsman Favorite city 
 
 # Bowler Favorite city 
-
-
-
 
 ```
