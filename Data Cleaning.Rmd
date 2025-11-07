@@ -101,10 +101,9 @@ match_joined$match_id[idx1] <- match_joined$match_id[idx2]
 match_joined$match_id[idx2] <- temp
 ```
 
+## Match Data sorted into individual season for seasonal analysis
 
-```{r data_cleaning_match_to_season, echo=FALSE, include=FALSE}
-
- ###################################Need to fix this later ###################################
+```{r data_cleaning_match_to_season, echo=FALSE, include=TRUE}
 
 # Sort by match_id
 match_joined <- match_joined[order(match_joined$match_id), ]
@@ -517,9 +516,19 @@ print(venue_bias_summary)
 ```
 
 
-
-
 ## Ball by Ball Data
+
+```{r cleaning_ball_by_ball_data}
+
+colnames(df_ball_by_ball_data)
+head(df_ball_by_ball_data)
+
+```
+
+```{r EDA_ball_by_ball_data}
+
+```
+
 
 ```{r}
 # per match analysis 
