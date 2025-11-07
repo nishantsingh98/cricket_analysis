@@ -101,9 +101,8 @@ match_joined$match_id[idx1] <- match_joined$match_id[idx2]
 match_joined$match_id[idx2] <- temp
 ```
 
-## Match Data sorted into individual season for seasonal analysis
 
-```{r data_cleaning_match_to_season, echo=FALSE, include=TRUE}
+```{r data_cleaning_match_to_season, echo=FALSE, include=FALSE}
 
 # Sort by match_id
 match_joined <- match_joined[order(match_joined$match_id), ]
