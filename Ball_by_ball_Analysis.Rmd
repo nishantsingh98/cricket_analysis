@@ -1,0 +1,377 @@
+---
+title: "Ball by ball Analysis"
+output: pdf_document
+date: "2026-04-02"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+pacman::p_load(tidyverse,
+               tidymodels,
+               skimr,
+               plotly,
+               yardstick, 
+               vip
+               ,cricketdata)
+
+
+df_ball_by_ball_data <- read_csv("./data/cleaned_ball_by_ball_data.csv")
+
+#dropping the washed out or draw matches 
+df_ball_by_ball_data <- df_ball_by_ball_data %>% 
+  filter(!is.na(winner))
+
+
+## final data used for creating models in Research Project part 1
+df_part_1 <- read_csv("./data/final_df_part_1.csv")
+
+```
+
+
+#Ball by ball data 
+
+## intital inspection   
+```{r  initial_data_inspection_1}
+
+skim_without_charts(df_ball_by_ball_data)
+
+colnames(df_ball_by_ball_data)
+
+
+```
+```{r initial_data_inspection_2}
+head(df_ball_by_ball_data)
+```
+## poweplay 
+```{r}
+# poweplay 
+unique(df_ball_by_ball_data$over)
+unique(df_ball_by_ball_data$powerplay_type)
+```
+
+```{r}
+# sum(!df_ball_by_ball_data$runs_total>= df_ball_by_ball_data$runs_batter)
+```
+
+## Powerplay /Surge analysis 
+```{r data_cleaning}
+# Power surge rule first introduced date 
+surge_intro_date <- as.Date("2020-12-10")
+
+# Calculate match targets from first innings
+match_targets <- df_ball_by_ball_data %>%
+  group_by(match_id) %>%
+  filter(innings == 1) %>%
+  summarise(
+    first_innings_total = sum(runs_total),
+    target_to_win = first_innings_total + 1,
+    .groups = "drop"
+  )
+
+# Aggregate ball-by-ball data to over-level 
+df_over_analysis <- df_ball_by_ball_data %>%
+  mutate(date = as.Date(date)) %>%
+  group_by(match_id, innings, over) %>%
+  
+  summarise(
+    # get the static labels using first()
+    date   = first(date),
+    team1   = first(team1),
+    team2   = first(team2),
+    winner = first(winner),  # overall match winner
+    bowler = first(bowler),
+    
+    #calculations needed
+    over_total_runs  = sum(runs_total),
+    over_batter_runs = sum(runs_batter),
+    over_extras      = sum(runs_total - runs_batter),
+    over_wickets     = sum(wicket),
+    boundaries       = sum(runs_batter %in% c(4, 6)),
+    dot_balls        = sum(runs_total == 0),
+    pp_type          = first(powerplay_type),
+    venue  = first(venue),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    era = ifelse(date < surge_intro_date, "Pre_Surge", "Surge_Era"),
+    pp_type = replace_na(pp_type, "none")
+  )
+
+# Define match phases using era-specific rules (6-over vs 4+2 system)
+df_over_analysis <- df_over_analysis %>%
+  mutate(match_phase = case_when(
+    era == "Pre_Surge" & over <= 6 ~ "Mandatory_PP",
+    era == "Surge_Era" & over <= 4 ~ "Mandatory_PP",
+    pp_type == "batting" ~ "Power_Surge",
+    over >= 16 ~ "Death",
+    TRUE ~ "Middle"
+  ))
+
+# cumulative match state and current run rate
+df_over_analysis <- df_over_analysis %>%
+  arrange(match_id, innings, over) %>%
+  group_by(match_id, innings) %>%
+  mutate(
+    current_score = cumsum(over_total_runs),
+    wickets_lost = cumsum(over_wickets),
+    current_run_rate = current_score / over
+  ) %>%
+  ungroup()
+
+# Join targets and calculate Required Run Rate (RRR) for second innings
+df_over_analysis <- df_over_analysis %>%
+  left_join(match_targets, by = "match_id") %>%
+  mutate(
+    runs_remaining = ifelse(innings == 2, target_to_win - current_score, NA),
+    overs_remaining = 20 - over,
+    req_run_rate = case_when(
+      innings == 1 ~ NA_real_,
+      runs_remaining <= 0 ~ 0,
+      overs_remaining == 0 ~ NA_real_,
+      TRUE ~ runs_remaining / overs_remaining
+    )
+  )
+```
+
+
+##Creating bowling style metadata
+```{r different_bowlers}
+bowlers <- as_tibble(unique(df_ball_by_ball_data$bowler))
+bowler_names <- unique(df_ball_by_ball_data$bowler)
+# bowler_info <- map_df(bowler_names, find_player_id)
+# write_csv(bowler_info, "./data/bowler_info.csv")
+
+bowler_info <- read_csv("./data/bowler_info.csv")
+
+colnames(bowler_info)
+
+```
+
+## Creating player metadata
+####obtained from cricksheet https://cricsheet.org/register/
+```{r creating_player_metadata}
+# unique_ids <- unique(bowler_info$ID)
+# detailed_meta <- fetch_player_meta(unique_ids)
+# every call is expensive so just write it to a csv file and use it 
+# player_meta_data <- write_csv(player_meta_data, "./data/player_meta_data.csv")
+
+player_meta_data <- read_csv("./data/people_registry.csv")
+player_meta_data <- player_meta_data %>% 
+  rename(key_cricinfo = cricinfo_id)
+
+#obtained from cricksheet https://cricsheet.org/register/
+people <-  read_csv("./data/people.csv") 
+
+people <- people %>% 
+  select(unique_name, key_cricinfo)
+
+my_bowlers <- people %>%
+  filter(unique_name %in% bowler_names)
+# To check if any of the bowlers are missing 
+  # missing_bowlers <- tibble(unique_name = bowler_names) %>%
+  #   anti_join(my_bowlers, by = "unique_name")
+  # 
+  # # View the missing players
+  # print(missing_bowlers)
+
+```
+## Merging datsets (player Metadata & Bowling styles)
+```{r merging_datasets}
+colnames(player_meta_data)
+colnames(my_bowlers)
+
+bowler_type_map <- my_bowlers %>%
+  # Clean join using the matching column name
+  left_join(player_meta_data, by = "key_cricinfo") %>%
+  select(key_cricinfo, unique_name, bowling_style) %>%
+  mutate(bowling_category = case_when(
+    str_detect(tolower(bowling_style), "fast|medium|seam|swing") ~ "Pace",
+    str_detect(tolower(bowling_style), "spin|break|orthodox|leg|wrist") ~ "Spin",
+    TRUE ~ "Unknown"
+  ))
+```
+
+
+```{r adding_bowling_style_and_category}
+# Combining Datasets Part 1 
+# combining_match_and_ball_datasets
+
+df_part_2 <- df_over_analysis %>%
+  left_join(
+    # Select only the necessary columns from the map to keep the dataset clean
+    bowler_type_map %>% select(unique_name, bowling_style, bowling_category), 
+    by = c("bowler" = "unique_name")
+  )
+skim_without_charts(df_over_analysis)
+```
+
+### creating over level dataset using bally by ball 
+```{r creating_master_dataset}
+# Combining Datasets Part 2 
+# creating master dataset by merging datset from ResearchProject A to be used In part B 
+
+# datasset(df_part_1 was used in research project Part A)
+df_master <- df_part_2 %>%
+  left_join(
+    df_part_1 %>%
+      select(
+        match_id,
+        season,
+        toss_winner,
+        toss_decision,
+        home_team,
+        home_wins,
+        toss_win_game_win,
+        toss_winner_home
+      ),
+    by = "match_id"
+  )
+
+colnames(df_master)
+```
+
+```{r}
+skim_without_charts(df_master)
+```
+#EDA V1
+```{r EDA_v1}
+unique(df_master$match_phase)
+unique(df_master$pp_type)
+# Runs by match phase
+df_master %>%
+  group_by(match_phase) %>%
+  summarise(
+    avg_runs = mean(over_total_runs, na.rm = TRUE),
+    avg_wickets = mean(over_wickets, na.rm = TRUE),
+    avg_boundaries = mean(boundaries, na.rm = TRUE)
+  )
+
+df_master %>%
+  group_by(match_phase, bowling_category) %>%
+  summarise(
+    avg_runs = mean(over_total_runs, na.rm = TRUE),
+    avg_wickets = mean(over_wickets, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Since the Power Surge rule was introduced on 10 December 2020, the exploratory analysis compares matches played before and after this date. Before the rule change innings were divided into three phases: Mandatory Powerplay, Middle, and Death. After the introduction of the Power Surge, a fourth phase, Power Surge, was added. Therefore, the analysis examines whether scoring patterns, wicket loss, boundary frequency, and bowling effectiveness changed across phases between the two periods.
+
+# Power Surge introduction date
+surge_intro_date <- as.Date("2020-12-10")
+
+df_eda <- df_master %>%
+  mutate(
+    date = as.Date(date),
+    surge_period = case_when(
+      date < surge_intro_date ~ "Before Power Surge",
+      TRUE ~ "After Power Surge"
+    )
+  )
+
+# Summary of scoring by phase and period
+bowling_phase_period_summary <- df_eda %>%
+  group_by(surge_period, match_phase, bowling_category) %>%
+  summarise(
+    overs = n(),
+    avg_runs = mean(over_total_runs, na.rm = TRUE),
+    avg_wickets = mean(over_wickets, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Visualise bowling type effect on runs
+ggplot(bowling_phase_period_summary,
+       aes(x = match_phase, y = avg_runs, fill = bowling_category)) +
+  geom_col(position = "dodge") +
+  facet_wrap(~ surge_period) +
+  theme_minimal() +
+  labs(
+    title = "Average Runs per Over by Bowling Type and Match Phase",
+    x = "Match Phase",
+    y = "Average Runs per Over",
+    fill = "Bowling Type"
+  )
+
+# Visualise bowling type effect on wickets
+ggplot(bowling_phase_period_summary,
+       aes(x = match_phase, y = avg_wickets, fill = bowling_category)) +
+  geom_col(position = "dodge") +
+  facet_wrap(~ surge_period) +
+  theme_minimal() +
+  labs(
+    title = "Average Wickets per Over by Bowling Type and Match Phase",
+    x = "Match Phase",
+    y = "Average Wickets per Over",
+    fill = "Bowling Type"
+  )
+```
+```{r}
+over_profile <- df_master %>%
+  group_by(innings, over) %>%
+  summarise(
+    avg_runs = mean(over_total_runs, na.rm = TRUE),
+    avg_wickets = mean(over_wickets, na.rm = TRUE),
+    avg_boundaries = mean(boundaries, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(over_profile, aes(x = over, y = avg_runs, color = factor(innings))) +
+  geom_line(linewidth = 1.1) +
+  geom_point() +
+  theme_minimal() +
+  labs(
+    title = "Average Runs per Over by Innings",
+    x = "Over",
+    y = "Average Runs",
+    color = "Innings"
+  )
+
+
+# Before vs after Power Surge by over
+surge_over_profile <- df_master %>%
+  mutate(
+    surge_period = if_else(
+      as.Date(date) < as.Date("2020-12-10"),
+      "Before Power Surge",
+      "After Power Surge"
+    )
+  ) %>%
+  group_by(surge_period, over) %>%
+  summarise(
+    avg_runs = mean(over_total_runs, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+
+ggplot(surge_over_profile, aes(x = over, y = avg_runs, color = surge_period)) +
+  geom_line(linewidth = 1.1) +
+  geom_point() +
+  theme_minimal() +
+  labs(
+    title = "Average Runs per Over Before and After Power Surge Introduction",
+    x = "Over",
+    y = "Average Runs",
+    color = "Period"
+  )
+
+
+# Boundary rate and dot-ball rate by phase
+phase_style <- df_master %>%
+  group_by(match_phase) %>%
+  summarise(
+    avg_boundaries = mean(boundaries, na.rm = TRUE),
+    avg_dot_balls = mean(dot_balls, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+phase_style
+```
+
+
+```{r}
+colnames(df_master)
+```
+
+
+
+
