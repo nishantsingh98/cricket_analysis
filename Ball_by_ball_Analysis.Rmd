@@ -1720,8 +1720,8 @@ section3_momentum_random
 # Model comparison
 section3_model_comparison <- tibble(
   model = c(
-    "Model 3A: State only",
-    "Model 3B: State + momentum"
+    "Model 3A: Current State only",
+    "Model 3B: Current State + momentum"
   ),
   AIC = c(
     AIC(model_3A_current_state_only),
@@ -1760,91 +1760,111 @@ section3_metrics <- metric_set(
   brier_class
 )
 
-
-# Predictions for Model 3A: State only
-
-
-preds_3A <- section3_test %>%
-  mutate(
-    .pred_Yes = predict(
-      model_3A_current_state_only,
-      newdata = section3_test,
-      type = "response",
-      allow.new.levels = TRUE
-    ),
-    .pred_No = 1 - .pred_Yes,
-    .pred_class = factor(
-      if_else(.pred_Yes >= 0.5, "Yes", "No"),
-      levels = c("No", "Yes")
-    ),
-    batting_team_win = factor(
+make_section3_preds <- function(model, data) {
+  data %>%
+    mutate(
+      .pred_Yes = predict(
+        model,
+        newdata = data,
+        type = "response",
+        allow.new.levels = TRUE
+      ),
+      .pred_No = 1 - .pred_Yes,
+      .pred_class = factor(
+        if_else(.pred_Yes >= 0.5, "Yes", "No"),
+        levels = c("No", "Yes")
+      ),
+      batting_team_win = factor(
+        batting_team_win,
+        levels = c("No", "Yes")
+      )
+    ) %>%
+    select(
       batting_team_win,
-      levels = c("No", "Yes")
+      .pred_No,
+      .pred_Yes,
+      .pred_class
     )
-  ) %>%
-  select(
-    batting_team_win,
-    .pred_No,
+}
+
+evaluate_section3_model <- function(model, train_data, test_data, model_name) {
+  
+  train_preds <- make_section3_preds(model, train_data)
+  test_preds  <- make_section3_preds(model, test_data)
+  
+  train_metrics <- section3_metrics(
+    train_preds,
+    truth = batting_team_win,
+    estimate = .pred_class,
     .pred_Yes,
-    .pred_class
-  )
-
-metrics_3A <- section3_metrics(
-  preds_3A,
-  truth = batting_team_win,
-  estimate = .pred_class,
-  .pred_Yes,
-  event_level = "second"
-) %>%
-  mutate(model = "Model 3A: State only")
-
-
-# Predictions for Model 3B: State + momentum
-
-
-preds_3B <- section3_test %>%
-  mutate(
-    .pred_Yes = predict(
-      model_3B_momentum,
-      newdata = section3_test,
-      type = "response",
-      allow.new.levels = TRUE
-    ),
-    .pred_No = 1 - .pred_Yes,
-    .pred_class = factor(
-      if_else(.pred_Yes >= 0.5, "Yes", "No"),
-      levels = c("No", "Yes")
-    ),
-    batting_team_win = factor(
-      batting_team_win,
-      levels = c("No", "Yes")
+    event_level = "second"
+  ) %>%
+    mutate(
+      model = model_name,
+      dataset = "Train"
     )
-  ) %>%
-  select(
-    batting_team_win,
-    .pred_No,
+  
+  test_metrics <- section3_metrics(
+    test_preds,
+    truth = batting_team_win,
+    estimate = .pred_class,
     .pred_Yes,
-    .pred_class
+    event_level = "second"
+  ) %>%
+    mutate(
+      model = model_name,
+      dataset = "Test"
+    )
+  
+  train_roc <- roc_curve(
+    train_preds,
+    truth = batting_team_win,
+    .pred_Yes,
+    event_level = "second"
+  ) %>%
+    mutate(
+      model = model_name,
+      dataset = "Train"
+    )
+  
+  test_roc <- roc_curve(
+    test_preds,
+    truth = batting_team_win,
+    .pred_Yes,
+    event_level = "second"
+  ) %>%
+    mutate(
+      model = model_name,
+      dataset = "Test"
+    )
+  
+  list(
+    metrics = bind_rows(train_metrics, test_metrics),
+    roc = bind_rows(train_roc, test_roc),
+    train_preds = train_preds,
+    test_preds = test_preds
   )
+}
 
-metrics_3B <- section3_metrics(
-  preds_3B,
-  truth = batting_team_win,
-  estimate = .pred_class,
-  .pred_Yes,
-  event_level = "second"
-) %>%
-  mutate(model = "Model 3B: State + momentum")
+section3_eval_3A <- evaluate_section3_model(
+  model = model_3A_current_state_only,
+  train_data = section3_train,
+  test_data = section3_test,
+  model_name = "Model 3A: Current State only"
+)
 
-
-# Performance comparison
-
+section3_eval_3B <- evaluate_section3_model(
+  model = model_3B_momentum,
+  train_data = section3_train,
+  test_data = section3_test,
+  model_name = "Model 3B: Current State + momentum"
+)
 
 section3_performance <- bind_rows(
-  metrics_3A,
-  metrics_3B
+  section3_eval_3A$metrics
+  # ,section3_eval_3B$metrics
 ) %>%
-  select(model, .metric, .estimate) %>%
+  select(model, dataset, .metric, .estimate) %>%
   pivot_wider(
     names_from = .metric,
     values_from = .estimate
@@ -1855,55 +1875,25 @@ section3_performance <- bind_rows(
     by = "model"
   )
 
+section3_roc <- bind_rows(
+  section3_eval_3A$roc
+  # ,section3_eval_3B$roc
+)
 
-# Confusion matrices
-cat("\n[Model 3A: State only confusion matrix]\n")
-conf_mat(
-  preds_3A,
-  truth = batting_team_win,
-  estimate = .pred_class
-) %>%
-  print()
+section3_performance
 
-cat("\n[Model 3B: State + momentum confusion matrix]\n")
-conf_mat(
-  preds_3B,
-  truth = batting_team_win,
-  estimate = .pred_class
-) %>%
-  print()
-
-# ROC comparison
-roc_3A <- roc_curve(
-  preds_3A,
-  truth = batting_team_win,
-  .pred_Yes,
-  event_level = "second"
-) %>%
-  mutate(model = "Model 3A: Current State only")
-
-roc_3B <- roc_curve(
-  preds_3B,
-  truth = batting_team_win,
-  .pred_Yes,
-  event_level = "second"
-) %>%
-  mutate(model = "Model 3B: Current State + momentum")
-
-bind_rows(roc_3A, roc_3B) %>%
-  ggplot(aes(x = 1 - specificity, y = sensitivity, color = model)) +
+section3_roc %>%
+  ggplot(aes(x = 1 - specificity, y = sensitivity, color = dataset)) +
   geom_line(linewidth = 1.1) +
   geom_abline(linetype = "dashed") +
+  facet_wrap(~ model) +
   theme_minimal() +
   labs(
-    title = "Section 3: ROC Comparison",
-    subtitle = "Current State only model vs State + Momentum model",
+    title = "Section 3: Train vs Test ROC Comparison",
     x = "1 - Specificity",
     y = "Sensitivity",
-    color = "Model"
+    color = "Dataset"
   )
-
-print(section3_performance)
 ```
 ## Section 4
 
