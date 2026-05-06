@@ -1567,16 +1567,81 @@ df_section_3 %>%
 
 
 ```{r section3_momentum_data_split, message=FALSE, warning=FALSE}
-# Scale numeric variables
-df_section_3 <- df_section_3 %>%
-  mutate(
-    current_score_z = as.numeric(scale(current_score)),
-    wickets_lost_z = as.numeric(scale(wickets_lost)),
-    current_run_rate_z = as.numeric(scale(current_run_rate)),
-    runs_last_3_z = as.numeric(scale(runs_last_3)),
-    wickets_last_3_z = as.numeric(scale(wickets_last_3)),
-    overs_since_last_wicket_z = as.numeric(scale(overs_since_last_wicket))
+set.seed(42)
+
+section3_match_ids <- unique(df_section_3$match_id)
+
+section3_train_ids <- sample(
+  section3_match_ids,
+  size = floor(0.8 * length(section3_match_ids))
+)
+
+section3_test_ids <- setdiff(section3_match_ids, section3_train_ids)
+
+section3_train_raw <- df_section_3 %>%
+  filter(match_id %in% section3_train_ids)
+
+section3_test_raw <- df_section_3 %>%
+  filter(match_id %in% section3_test_ids)
+
+section3_numeric_vars <- c(
+  "current_score",
+  "wickets_lost",
+  "current_run_rate",
+  "runs_last_3",
+  "wickets_last_3",
+  "overs_since_last_wicket"
+)
+
+section3_scaling_values <- section3_train_raw %>%
+  summarise(
+    across(
+      all_of(section3_numeric_vars),
+      list(
+        mean = ~ mean(.x, na.rm = TRUE),
+        sd = ~ sd(.x, na.rm = TRUE)
+      )
+    )
   )
+
+scale_section3_data <- function(data, scaling_values) {
+  data %>%
+    mutate(
+      current_score_z =
+        (current_score - scaling_values$current_score_mean) /
+        scaling_values$current_score_sd,
+      
+      wickets_lost_z =
+        (wickets_lost - scaling_values$wickets_lost_mean) /
+        scaling_values$wickets_lost_sd,
+      
+      current_run_rate_z =
+        (current_run_rate - scaling_values$current_run_rate_mean) /
+        scaling_values$current_run_rate_sd,
+      
+      runs_last_3_z =
+        (runs_last_3 - scaling_values$runs_last_3_mean) /
+        scaling_values$runs_last_3_sd,
+      
+      wickets_last_3_z =
+        (wickets_last_3 - scaling_values$wickets_last_3_mean) /
+        scaling_values$wickets_last_3_sd,
+      
+      overs_since_last_wicket_z =
+        (overs_since_last_wicket - scaling_values$overs_since_last_wicket_mean) /
+        scaling_values$overs_since_last_wicket_sd
+    )
+}
+
+section3_train <- scale_section3_data(
+  section3_train_raw,
+  section3_scaling_values
+)
+
+section3_test <- scale_section3_data(
+  section3_test_raw,
+  section3_scaling_values
+)
 ```
 
 ### Model 
@@ -1593,7 +1658,7 @@ model_3A_current_state_only <- lme4::glmer(
     (1 | batting_team) +
     (1 | bowling_team) +
     (1 | match_id),
-  data = df_section_3,
+  data = section3_train,
   family = binomial(link = "logit"),
   
 )
@@ -1614,7 +1679,7 @@ model_3B_momentum <- lme4::glmer(
     (1 | batting_team) +
     (1 | bowling_team) +
     (1 | match_id),
-  data = df_section_3,
+  data = section3_train,
   family = binomial(link = "logit"),
 )
 
@@ -1699,11 +1764,11 @@ section3_metrics <- metric_set(
 # Predictions for Model 3A: State only
 
 
-preds_3A <- df_section_3 %>%
+preds_3A <- section3_test %>%
   mutate(
     .pred_Yes = predict(
       model_3A_current_state_only,
-      newdata = df_section_3,
+      newdata = section3_test,
       type = "response",
       allow.new.levels = TRUE
     ),
@@ -1737,11 +1802,11 @@ metrics_3A <- section3_metrics(
 # Predictions for Model 3B: State + momentum
 
 
-preds_3B <- df_section_3 %>%
+preds_3B <- section3_test %>%
   mutate(
     .pred_Yes = predict(
       model_3B_momentum,
-      newdata = df_section_3,
+      newdata = section3_test,
       type = "response",
       allow.new.levels = TRUE
     ),
@@ -1790,12 +1855,8 @@ section3_performance <- bind_rows(
     by = "model"
   )
 
-print(section3_performance)
-
 
 # Confusion matrices
-
-
 cat("\n[Model 3A: State only confusion matrix]\n")
 conf_mat(
   preds_3A,
@@ -1812,10 +1873,7 @@ conf_mat(
 ) %>%
   print()
 
-
 # ROC comparison
-
-
 roc_3A <- roc_curve(
   preds_3A,
   truth = batting_team_win,
@@ -1844,8 +1902,6 @@ bind_rows(roc_3A, roc_3B) %>%
     y = "Sensitivity",
     color = "Model"
   )
-
-
 
 print(section3_performance)
 ```
