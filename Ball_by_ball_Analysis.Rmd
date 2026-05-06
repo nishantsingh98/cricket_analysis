@@ -98,15 +98,42 @@ df_over_analysis <- df_ball_by_ball_data %>%
     pp_type = replace_na(pp_type, "none")
   )
 
-# Define match phases using era-specific rules (6-over vs 4+2 system)
+# # Define match phases using era-specific rules (6-over vs 4+2 system)
+# df_over_analysis <- df_over_analysis %>%
+#   mutate(match_phase = case_when(
+#     era == "Pre_Surge" & over <= 6 ~ "Mandatory_PP",
+#     era == "Surge_Era" & over <= 4 ~ "Mandatory_PP",
+#     pp_type == "batting" ~ "Power_Surge",
+#     over >= 16 ~ "Death",
+#     TRUE ~ "Middle"
+#   ))
+
 df_over_analysis <- df_over_analysis %>%
-  mutate(match_phase = case_when(
-    era == "Pre_Surge" & over <= 6 ~ "Mandatory_PP",
-    era == "Surge_Era" & over <= 4 ~ "Mandatory_PP",
-    pp_type == "batting" ~ "Power_Surge",
-    over >= 16 ~ "Death",
-    TRUE ~ "Middle"
-  ))
+  mutate(
+    # Normal innings phase, regardless of Power Surge
+    match_phase = case_when(
+      era == "Pre_Surge" & over <= 6 ~ "Mandatory_PP",
+      era == "Surge_Era" & over <= 4 ~ "Power_Surge_1",
+      over >= 16 ~ "Death",
+      TRUE ~ "Middle"
+    ),
+    
+    # Tactical phase, where Power Surge is treated separately
+    tactical_phase = case_when(
+      era == "Pre_Surge" & over <= 6 ~ "Mandatory_PP",
+      era == "Surge_Era" & over <= 4 ~ "Power_Surge_1",
+      era == "Surge_Era" & pp_type == "batting" ~ "Power_Surge_2",
+      over >= 16 ~ "Death",
+      TRUE ~ "Middle"
+    ),
+    
+    # When the Power Surge was taken
+    time_when_surge_taken = case_when(
+      tactical_phase == "Power_Surge_2" & match_phase == "Middle" ~ "Surge taken in Middle overs",
+      tactical_phase == "Power_Surge_2" & match_phase == "Death" ~ "Surge taken in Death overs",
+      TRUE ~ "No Power Surge"
+    )
+  )
 
 # cumulative match state and current run rate
 df_over_analysis <- df_over_analysis %>%
@@ -135,7 +162,7 @@ df_over_analysis <- df_over_analysis %>%
 ```
 
 
-##Creating bowling style metadata
+##Creating bowling style metadata from existing ball by ball
 ```{r different_bowlers}
 bowlers <- as_tibble(unique(df_ball_by_ball_data$bowler))
 bowler_names <- unique(df_ball_by_ball_data$bowler)
@@ -228,14 +255,313 @@ df_master <- df_part_2 %>%
     by = "match_id"
   )
 
+df_before_surge <- df_master %>%
+  mutate(date = as.Date(date)) %>%
+  filter(date < surge_intro_date)
+
+df_after_surge <- df_master %>%
+  mutate(date = as.Date(date)) %>%
+  filter(date >= surge_intro_date)
+
 colnames(df_master)
 ```
 
 ```{r}
 skim_without_charts(df_master)
 ```
-#EDA V1
+#EDA V1_final
 ```{r EDA_v1}
+unique(df_master$match_phase)
+unique(df_master$tactical_phase)
+unique(df_master$time_when_surge_taken)
+unique(df_master$pp_type)
+
+# Runs by match phase
+df_master %>%
+  group_by(match_phase) %>%
+  summarise(
+    avg_runs = mean(over_total_runs, na.rm = TRUE),
+    avg_wickets = mean(over_wickets, na.rm = TRUE),
+    avg_boundaries = mean(boundaries, na.rm = TRUE)
+  )
+
+df_master %>%
+  group_by(tactical_phase) %>%
+  summarise(
+    avg_runs = mean(over_total_runs, na.rm = TRUE),
+    avg_wickets = mean(over_wickets, na.rm = TRUE),
+    avg_boundaries = mean(boundaries, na.rm = TRUE),
+    avg_dot_balls = mean(dot_balls, na.rm = TRUE)
+  )
+
+df_master %>%
+  group_by(tactical_phase, bowling_category) %>%
+  summarise(
+    avg_runs = mean(over_total_runs, na.rm = TRUE),
+    avg_wickets = mean(over_wickets, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Since the Power Surge rule was introduced on 10 December 2020, the exploratory analysis compares matches played before and after this date. Before the rule change innings were divided into Mandatory Powerplay, Middle, and Death. After the introduction of the Power Surge, the first four overs are treated as Power_Surge_1 and the tactical two-over surge is treated as Power_Surge_2. Therefore, the analysis examines whether scoring patterns, wicket loss, boundary frequency, and bowling effectiveness changed across phases between the two periods.
+
+# Power Surge introduction date
+surge_intro_date <- as.Date("2020-12-10")
+
+df_eda <- df_master %>%
+  mutate(
+    date = as.Date(date),
+    surge_period = case_when(
+      date < surge_intro_date ~ "Before Power Surge",
+      TRUE ~ "After Power Surge"
+    )
+  )
+
+# Summary of scoring by match phase and period
+match_phase_period_summary <- df_eda %>%
+  group_by(surge_period, match_phase) %>%
+  summarise(
+    overs = n(),
+    avg_runs = mean(over_total_runs, na.rm = TRUE),
+    avg_wickets = mean(over_wickets, na.rm = TRUE),
+    avg_boundaries = mean(boundaries, na.rm = TRUE),
+    avg_dot_balls = mean(dot_balls, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# match_phase_period_summary
+
+# Summary of scoring by tactical phase and period
+tactical_phase_period_summary <- df_eda %>%
+  group_by(surge_period, tactical_phase) %>%
+  summarise(
+    overs = n(),
+    avg_runs = mean(over_total_runs, na.rm = TRUE),
+    avg_wickets = mean(over_wickets, na.rm = TRUE),
+    avg_boundaries = mean(boundaries, na.rm = TRUE),
+    avg_dot_balls = mean(dot_balls, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+tactical_phase_period_summary
+
+
+# Summary of bowling type by tactical phase and period
+bowling_phase_period_summary <- df_eda %>%
+  group_by(surge_period, tactical_phase, bowling_category) %>%
+  summarise(
+    overs = n(),
+    avg_runs = mean(over_total_runs, na.rm = TRUE),
+    avg_wickets = mean(over_wickets, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Visualise bowling type effect on runs
+ggplot(bowling_phase_period_summary,
+       aes(x = tactical_phase, y = avg_runs, fill = bowling_category)) +
+  geom_col(position = "dodge") +
+  facet_wrap(~ surge_period) +
+  theme_minimal() +
+  labs(
+    title = "Average Runs per Over by Bowling Type and Tactical Phase",
+    x = "Tactical Phase",
+    y = "Average Runs per Over",
+    fill = "Bowling Type"
+  )
+
+# Visualise bowling type effect on wickets
+ggplot(bowling_phase_period_summary,
+       aes(x = tactical_phase, y = avg_wickets, fill = bowling_category)) +
+  geom_col(position = "dodge") +
+  facet_wrap(~ surge_period) +
+  theme_minimal() +
+  labs(
+    title = "Average Wickets per Over by Bowling Type and Tactical Phase",
+    x = "Tactical Phase",
+    y = "Average Wickets per Over",
+    fill = "Bowling Type"
+  )
+
+# Where the final Power Surge was taken
+surge_timing_summary <- df_master %>%
+  filter(tactical_phase == "Power_Surge_2") %>%
+  group_by(time_when_surge_taken) %>%
+  summarise(
+    surge_overs = n(),
+    avg_runs = mean(over_total_runs, na.rm = TRUE),
+    avg_wickets = mean(over_wickets, na.rm = TRUE),
+    avg_boundaries = mean(boundaries, na.rm = TRUE),
+    avg_dot_balls = mean(dot_balls, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+surge_timing_summary
+
+# Visualise timing of final Power Surge
+ggplot(surge_timing_summary,
+       aes(x = time_when_surge_taken, y = surge_overs, fill = time_when_surge_taken)) +
+  geom_col() +
+  theme_minimal() +
+  labs(
+    title = "Timing of Final Power Surge",
+    x = "Time When Surge Taken",
+    y = "Number of Power Surge Overs",
+    fill = "Time When Surge Taken"
+  ) +
+  theme(legend.position = "none")
+
+# Visualise scoring during final Power Surge
+ggplot(surge_timing_summary,
+       aes(x = time_when_surge_taken, y = avg_runs, fill = time_when_surge_taken)) +
+  geom_col() +
+  theme_minimal() +
+  labs(
+    title = "Average Runs During Final Power Surge",
+    x = "Time When Surge Taken",
+    y = "Average Runs per Over",
+    fill = "Time When Surge Taken"
+  ) +
+  theme(legend.position = "none")
+
+# Final Power Surge by innings
+surge_by_innings <- df_master %>%
+  filter(tactical_phase == "Power_Surge_2") %>%
+  group_by(match_id, innings) %>%
+  summarise(
+    date = first(date),
+    team1 = first(team1),
+    team2 = first(team2),
+    winner = first(winner),
+    surge_start_over = min(over),
+    surge_end_over = max(over),
+    time_when_surge_taken = first(time_when_surge_taken),
+    surge_runs = sum(over_total_runs, na.rm = TRUE),
+    surge_wickets = sum(over_wickets, na.rm = TRUE),
+    surge_boundaries = sum(boundaries, na.rm = TRUE),
+    surge_dot_balls = sum(dot_balls, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+surge_by_innings
+
+surge_by_innings_summary <- surge_by_innings %>%
+  group_by(time_when_surge_taken) %>%
+  summarise(
+    innings_count = n(),
+    avg_surge_runs = mean(surge_runs, na.rm = TRUE),
+    avg_surge_wickets = mean(surge_wickets, na.rm = TRUE),
+    avg_surge_boundaries = mean(surge_boundaries, na.rm = TRUE),
+    avg_surge_dot_balls = mean(surge_dot_balls, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+surge_by_innings_summary
+
+
+```
+#EDA V2_final
+```{r}
+over_profile <- df_master %>%
+  group_by(innings, over) %>%
+  summarise(
+    avg_runs = mean(over_total_runs, na.rm = TRUE),
+    avg_wickets = mean(over_wickets, na.rm = TRUE),
+    avg_boundaries = mean(boundaries, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(over_profile, aes(x = over, y = avg_runs, color = factor(innings))) +
+  geom_line(linewidth = 1.1) +
+  geom_point() +
+  theme_minimal() +
+  labs(
+    title = "Average Runs per Over by Innings",
+    x = "Over",
+    y = "Average Runs",
+    color = "Innings"
+  )
+
+
+# Before vs after Power Surge by over
+surge_over_profile <- df_master %>%
+  group_by(era, over) %>%
+  summarise(
+    avg_runs = mean(over_total_runs, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+
+ggplot(surge_over_profile, aes(x = over, y = avg_runs, color = era)) +
+  geom_line(linewidth = 1.1) +
+  geom_point() +
+  theme_minimal() +
+  labs(
+    title = "Average Runs per Over Before and After Power Surge Introduction",
+    x = "Over",
+    y = "Average Runs",
+    color = "Era"
+  )
+
+
+# Boundary rate and dot-ball rate by match phase
+phase_style <- df_master %>%
+  group_by(match_phase) %>%
+  summarise(
+    avg_boundaries = mean(boundaries, na.rm = TRUE),
+    avg_dot_balls = mean(dot_balls, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+phase_style
+
+
+# Boundary rate and dot-ball rate by tactical phase
+tactical_phase_style <- df_master %>%
+  group_by(tactical_phase) %>%
+  summarise(
+    avg_boundaries = mean(boundaries, na.rm = TRUE),
+    avg_dot_balls = mean(dot_balls, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+tactical_phase_style
+
+
+# Death over performance including Power Surge
+death_over_performance <- df_master %>%
+  filter(match_phase == "Death") %>%
+  group_by(era) %>%
+  summarise(
+    death_overs = n(),
+    avg_runs = mean(over_total_runs, na.rm = TRUE),
+    avg_wickets = mean(over_wickets, na.rm = TRUE),
+    avg_boundaries = mean(boundaries, na.rm = TRUE),
+    avg_dot_balls = mean(dot_balls, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+death_over_performance
+
+
+# Death over performance excluding Power Surge
+normal_death_performance <- df_master %>%
+  filter(tactical_phase == "Death") %>%
+  group_by(era) %>%
+  summarise(
+    death_overs = n(),
+    avg_runs = mean(over_total_runs, na.rm = TRUE),
+    avg_wickets = mean(over_wickets, na.rm = TRUE),
+    avg_boundaries = mean(boundaries, na.rm = TRUE),
+    avg_dot_balls = mean(dot_balls, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+normal_death_performance
+```
+
+<!--
+Logic needs to be changed for EDA since phase level logic was flawed 
+#EDA V1 wickets 
+```{r }
 unique(df_master$match_phase)
 unique(df_master$pp_type)
 # Runs by match phase
@@ -305,7 +631,10 @@ ggplot(bowling_phase_period_summary,
     fill = "Bowling Type"
   )
 ```
-```{r}
+
+
+# Eda v2 Average runs Scored 
+```{r }
 over_profile <- df_master %>%
   group_by(innings, over) %>%
   summarise(
@@ -366,12 +695,1479 @@ phase_style <- df_master %>%
 
 phase_style
 ```
-
+-->
 
 ```{r}
 colnames(df_master)
 ```
 
+<!-- #---------------------------------------------------------------------------------------------- -->
+
+# Modeling 
+
+## Section 1
+Improvement of part A by using ball-by-ball information
+
+#### Checkpoint logic 
+```{r checkpoint_logic, include=FALSE}
+# Create phase-aware checkpoint dataset
+df_section_1 <- df_master %>%
+  arrange(match_id, innings, over) %>%
+  group_by(match_id, innings) %>%
+  mutate(
+    end_power_surge_1 = if_else(
+      any(tactical_phase == "Power_Surge_1"),
+      max(over[tactical_phase == "Power_Surge_1"], na.rm = TRUE),
+      NA_real_
+    ),
+
+    end_mandatory_pp = if_else(
+      any(tactical_phase == "Mandatory_PP"),
+      max(over[tactical_phase == "Mandatory_PP"], na.rm = TRUE),
+      NA_real_
+    ),
+
+    end_power_surge_2 = if_else(
+      any(tactical_phase == "Power_Surge_2"),
+      max(over[tactical_phase == "Power_Surge_2"], na.rm = TRUE),
+      NA_real_
+    ),
+
+    checkpoint_type = case_when(
+      era == "Pre_Surge" & over == end_mandatory_pp ~ "End_Mandatory_PP",
+      era == "Surge_Era" & over == end_power_surge_1 ~ "End_Power_Surge_1",
+      era == "Surge_Era" & over == end_power_surge_2 ~ "End_Power_Surge_2",
+      over == 10 ~ "Mid_Innings",
+      over == 16 ~ "Death_Start",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  ungroup() %>%
+  filter(!is.na(checkpoint_type)) %>%
+  mutate(
+    toss_loser = case_when(
+      toss_winner == team1 ~ team2,
+      toss_winner == team2 ~ team1,
+      TRUE ~ NA_character_
+    ),
+
+    batting_team = case_when(
+      toss_decision == "bat" & innings == 1 ~ toss_winner,
+      toss_decision == "bat" & innings == 2 ~ toss_loser,
+      toss_decision == "field" & innings == 1 ~ toss_loser,
+      toss_decision == "field" & innings == 2 ~ toss_winner,
+      TRUE ~ NA_character_
+    ),
+
+    bowling_team = case_when(
+      batting_team == team1 ~ team2,
+      batting_team == team2 ~ team1,
+      TRUE ~ NA_character_
+    ),
+
+    toss_winner_batting = factor(
+      if_else(batting_team == toss_winner, "Yes", "No"),
+      levels = c("No", "Yes")
+    ),
+
+    toss_win_game_win = factor(
+      if_else(winner == toss_winner, "Yes", "No"),
+      levels = c("No", "Yes")
+    ),
+
+    innings = factor(innings),
+    checkpoint_type = factor(
+      checkpoint_type,
+      levels = c(
+        "End_Mandatory_PP",
+        "End_Power_Surge_1",
+        "End_Power_Surge_2",
+        "Mid_Innings",
+        "Death_Start"
+      )
+    ),
+    toss_decision = factor(toss_decision, levels = c("bat", "field")),
+    toss_winner_home = factor(toss_winner_home, levels = c("away", "home", "neutral")),
+    toss_winner = factor(toss_winner),
+    toss_loser = factor(toss_loser),
+    batting_team = factor(batting_team),
+    bowling_team = factor(bowling_team),
+    match_phase = factor(match_phase),
+    tactical_phase = factor(tactical_phase),
+    era = factor(era),
+    venue = factor(venue),
+    season = factor(season)
+  ) %>%
+  select(
+    match_id,
+    date,
+    era,
+    innings,
+    over,
+    checkpoint_type,
+    toss_win_game_win,
+    toss_decision,
+    toss_winner_home,
+    toss_winner,
+    toss_loser,
+    batting_team,
+    bowling_team,
+    toss_winner_batting,
+    match_phase,
+    tactical_phase,
+    time_when_surge_taken,
+    current_score,
+    wickets_lost,
+    current_run_rate
+  ) %>%
+  drop_na(toss_win_game_win)
+
+# Check checkpoint distribution
+df_section_1 %>%
+  count(era, checkpoint_type) %>%
+  print(n = Inf)
+
+# Check batting logic
+df_section_1 %>%
+  count(toss_decision, innings, toss_winner_batting) %>%
+  print(n = Inf)
+
+# Check outcome balance
+df_section_1 %>%
+  count(toss_win_game_win) %>%
+  print()
+
+# Check checkpoints by innings
+df_section_1 %>%
+  count(innings, checkpoint_type) %>%
+  print(n = Inf)
+```
+
+
+### Model A, B, C 
+```{r part_b_section1_partA, include=FALSE}
+set.seed(42)
+
+# Match-level train/test split
+match_ids <- unique(df_section_1$match_id)
+
+train_ids <- sample(
+  match_ids,
+  size = floor(0.8 * length(match_ids))
+)
+
+test_ids <- setdiff(match_ids, train_ids)
+
+section1_train <- df_section_1 %>%
+  filter(match_id %in% train_ids)
+
+section1_test <- df_section_1 %>%
+  filter(match_id %in% test_ids)
+
+section1_metrics <- metric_set(
+  accuracy,
+  roc_auc,
+  brier_class
+)
+
+ # Helper function
+ fit_eval_logit <- function(model_formula, train_data, test_data, model_name) {
+
+  rec <- recipe(model_formula, data = train_data) %>%
+    step_nzv(all_predictors())
+
+  mod <- logistic_reg() %>%
+    set_engine("glm") %>%
+    set_mode("classification")
+
+  wf <- workflow() %>%
+    add_model(mod) %>%
+    add_recipe(rec)
+
+  fit_obj <- fit(wf, data = train_data)
+
+  preds <- predict(fit_obj, new_data = test_data, type = "prob") %>%
+    bind_cols(predict(fit_obj, new_data = test_data, type = "class")) %>%
+    bind_cols(test_data %>% select(toss_win_game_win))
+
+  metrics_tbl <- section1_metrics(
+    preds,
+    truth = toss_win_game_win,
+    estimate = .pred_class,
+    .pred_Yes
+  ) %>%
+    mutate(model = model_name)
+
+  list(
+    name = model_name,
+    fit = fit_obj,
+    preds = preds,
+    metrics = metrics_tbl,
+    aic = AIC(extract_fit_engine(fit_obj))
+  )
+}
+
+# Model A: Part A baseline
+model_A_formula <- toss_win_game_win ~
+  toss_decision +
+  toss_winner_home
+
+model_A <- fit_eval_logit(
+  model_A_formula,
+  section1_train,
+  section1_test,
+  "Model A: Part A baseline"
+)
+
+# Model B: Part A baseline with team fixed effects
+model_B_formula <- toss_win_game_win ~
+  toss_decision +
+  toss_winner_home +
+  toss_winner +
+  toss_loser
+
+model_B <- fit_eval_logit(
+  model_B_formula,
+  section1_train,
+  section1_test,
+  "Model B: Team fixed effects"
+)
+
+# Model C: Team fixed effects with phase-aware ball-by-ball state
+model_C_formula <- toss_win_game_win ~
+  toss_decision +
+  toss_winner_home +
+  toss_winner +
+  toss_loser +
+  innings +
+  checkpoint_type +
+  toss_winner_batting +
+  current_score +
+  wickets_lost +
+  current_run_rate
+
+model_C <- fit_eval_logit(
+  model_C_formula,
+  section1_train,
+  section1_test,
+  "Model C: Team FE + phase-aware state"
+)
+
+# Model comparison
+section1_comparison <- bind_rows(
+  model_A$metrics,
+  model_B$metrics,
+  model_C$metrics
+) %>%
+  select(model, .metric, .estimate) %>%
+  pivot_wider(
+    names_from = .metric,
+    values_from = .estimate
+  ) %>%
+  left_join(
+    tibble(
+      model = c(
+        model_A$name,
+        model_B$name,
+        model_C$name
+      ),
+      AIC = c(
+        model_A$aic,
+        model_B$aic,
+        model_C$aic
+      )
+    ),
+    by = "model"
+  )
+
+print(section1_comparison)
+
+# ROC comparison
+roc_A <- roc_curve(model_A$preds, truth = toss_win_game_win, .pred_Yes) %>%
+  mutate(model = "A: Part A baseline")
+
+roc_B <- roc_curve(model_B$preds, truth = toss_win_game_win, .pred_Yes) %>%
+  mutate(model = "B: Team fixed effects")
+
+roc_C <- roc_curve(model_C$preds, truth = toss_win_game_win, .pred_Yes) %>%
+  mutate(model = "C: Team FE + state")
+
+bind_rows(roc_A, roc_B, roc_C) %>%
+  ggplot(aes(x = 1 - specificity, y = sensitivity, color = model)) +
+  geom_line(linewidth = 1.1) +
+  geom_abline(linetype = "dashed") +
+  theme_minimal() +
+  labs(
+    title = "ROC Comparison",
+    subtitle = "Improvement of Part A using phase-aware ball-by-ball checkpoints",
+    x = "1 - Specificity",
+    y = "Sensitivity",
+    color = "Model"
+  )
+
+# Model summaries
+summary(extract_fit_engine(model_A$fit))
+summary(extract_fit_engine(model_B$fit))
+summary(extract_fit_engine(model_C$fit))
+
+print(section1_comparison)
+```
+
+
+### Model D mixed effect 
+#### Setup
+```{r section1_mixed_effects_setup, message=FALSE, warning=FALSE, include=FALSE}
+# Model D: Mixed-effects logistic regression using lme4
+
+pacman::p_load(lme4, broom.mixed)
+
+# Prepare train data for lme4
+section1_train_mixed <- section1_train %>%
+  mutate(
+    toss_win_game_win_num = if_else(toss_win_game_win == "Yes", 1, 0),
+    toss_decision = factor(toss_decision, levels = c("bat", "field")),
+    toss_winner_home = factor(toss_winner_home, levels = c("away", "home", "neutral")),
+    innings = factor(innings),
+    checkpoint_type = factor(checkpoint_type),
+    toss_winner_batting = factor(toss_winner_batting, levels = c("No", "Yes")),
+    toss_winner = factor(toss_winner),
+    toss_loser = factor(toss_loser)
+  ) %>%
+  drop_na(
+    toss_win_game_win_num,
+    toss_decision,
+    toss_winner_home,
+    innings,
+    checkpoint_type,
+    toss_winner_batting,
+    current_score,
+    wickets_lost,
+    current_run_rate,
+    toss_winner,
+    toss_loser
+  )
+
+# Prepare test data for lme4
+section1_test_mixed <- section1_test %>%
+  mutate(
+    toss_win_game_win_num = if_else(toss_win_game_win == "Yes", 1, 0),
+    toss_decision = factor(toss_decision, levels = c("bat", "field")),
+    toss_winner_home = factor(toss_winner_home, levels = c("away", "home", "neutral")),
+    innings = factor(innings),
+    checkpoint_type = factor(checkpoint_type),
+    toss_winner_batting = factor(toss_winner_batting, levels = c("No", "Yes")),
+    toss_winner = factor(toss_winner),
+    toss_loser = factor(toss_loser)
+  ) %>%
+  drop_na(
+    toss_win_game_win_num,
+    toss_decision,
+    toss_winner_home,
+    innings,
+    checkpoint_type,
+    toss_winner_batting,
+    current_score,
+    wickets_lost,
+    toss_winner,
+    toss_loser
+  )
+```
+
+#### Model
+```{r section1_mixed_effects_model, message=FALSE, warning=FALSE}
+# Fit mixed-effects logistic regression
+model_D_mixed <- lme4::glmer(
+  toss_win_game_win_num ~
+    toss_decision +
+    toss_winner_home +
+    innings +
+    checkpoint_type +
+    toss_winner_batting +
+    current_score +
+    wickets_lost +
+    (1 | toss_winner) +
+    (1 | toss_loser),
+  family = binomial(link = "logit"),
+  data = section1_train_mixed
+)
+```
+
+
+```{r section1_me_performance, message=FALSE, warning=FALSE}
+# Fixed effect odds ratios
+mixed_odds_ratios <- broom.mixed::tidy(
+  model_D_mixed,
+  effects = "fixed",
+  exponentiate = TRUE,
+  conf.int = TRUE
+)
+
+print("Fixed effect odds ratios")
+mixed_odds_ratios
+
+# Random effect variance components
+
+mixed_random_effects <- broom.mixed::tidy(
+  model_D_mixed,
+  effects = "ran_pars"
+)
+
+print("Random effect variance components")
+mixed_random_effects
+
+# Predict on test data
+mixed_pred_prob <- predict(
+  model_D_mixed,
+  newdata = section1_test_mixed,
+  type = "response",
+  allow.new.levels = TRUE
+)
+
+mixed_preds <- section1_test_mixed %>%
+  mutate(
+    .pred_Yes = mixed_pred_prob,
+    .pred_No = 1 - .pred_Yes,
+    .pred_class = factor(
+      if_else(.pred_Yes >= 0.5, "Yes", "No"),
+      levels = c("No", "Yes")
+    ),
+    toss_win_game_win = factor(
+      if_else(toss_win_game_win_num == 1, "Yes", "No"),
+      levels = c("No", "Yes")
+    )
+  )
+
+# Mixed model metrics
+mixed_metrics <- section1_metrics(
+  mixed_preds,
+  truth = toss_win_game_win,
+  estimate = .pred_class,
+  .pred_Yes
+) %>%
+  mutate(model = "Model D: Mixed effects")
+
+print("Predict on test data")
+mixed_metrics
+
+# Add mixed model to previous models A,b,c in a  comparison table
+section1_comparison_mixed <- bind_rows(
+  section1_comparison %>%
+    select(model, accuracy, roc_auc, brier_class) %>%
+    pivot_longer(
+      cols = c(accuracy, roc_auc, brier_class),
+      names_to = ".metric",
+      values_to = ".estimate"
+    ),
+  mixed_metrics
+) %>%
+  pivot_wider(
+    names_from = .metric,
+    values_from = .estimate
+  ) %>%
+  left_join(
+    tibble(
+      model = c(
+        section1_comparison$model,
+        "Model D: Mixed effects"
+      ),
+      AIC = c(
+        section1_comparison$AIC,
+        AIC(model_D_mixed)
+      )
+    ),
+    by = "model"
+  )
+
+section1_comparison_mixed
+
+roc_mixed <- roc_curve(mixed_preds, truth = toss_win_game_win, .pred_Yes) %>%
+  mutate(model = "D: Mixed effects")
+
+# ROC comparison including mixed model
+bind_rows(roc_A, roc_B, roc_C, roc_mixed) %>%
+  ggplot(aes(x = 1 - specificity, y = sensitivity, color = model)) +
+  geom_line(linewidth = 1.1) +
+  geom_abline(linetype = "dashed") +
+  theme_minimal() +
+  labs(
+    title = "ROC Comparison with Mixed Effects",
+    subtitle = "Team strength modelled using lme4 random intercepts",
+    x = "1 - Specificity",
+    y = "Sensitivity",
+    color = "Model"
+  )
+```
+
+```{r}
+summary(model_D_mixed)
+```
 
 
 
+
+## Section 2
+Bowling tactics by phase of the match
+
+```{r section2_bowling_tactics_setup, message=FALSE, warning=FALSE}
+# Section 2 dataset
+df_section_2 <- df_master %>%
+  mutate(
+    toss_loser = case_when(
+      toss_winner == team1 ~ team2,
+      toss_winner == team2 ~ team1,
+      TRUE ~ NA_character_
+    ),
+
+    batting_team = case_when(
+      toss_decision == "bat" & innings == 1 ~ toss_winner,
+      toss_decision == "bat" & innings == 2 ~ toss_loser,
+      toss_decision == "field" & innings == 1 ~ toss_loser,
+      toss_decision == "field" & innings == 2 ~ toss_winner,
+      TRUE ~ NA_character_
+    ),
+
+    bowling_team = case_when(
+      batting_team == team1 ~ team2,
+      batting_team == team2 ~ team1,
+      TRUE ~ NA_character_
+    ),
+
+    innings = factor(innings),
+    tactical_phase = factor(
+      tactical_phase,
+      levels = c(
+        "Mandatory_PP",
+        "Power_Surge_1",
+        "Power_Surge_2",
+        "Middle",
+        "Death"
+      )
+    ),
+    bowling_category = factor(bowling_category, levels = c("Pace", "Spin")),
+    bowler = factor(bowler),
+    match_id = factor(match_id),
+    batting_team = factor(batting_team),
+    bowling_team = factor(bowling_team)
+  ) %>%
+  filter(
+    bowling_category %in% c("Pace", "Spin"),
+    !is.na(tactical_phase),
+    !is.na(over_total_runs),
+    !is.na(bowler),
+    !is.na(match_id)
+  )
+
+# Descriptive summary
+section2_summary <- df_section_2 %>%
+  group_by(tactical_phase, bowling_category) %>%
+  summarise(
+    overs = n(),
+    avg_runs = mean(over_total_runs, na.rm = TRUE),
+    avg_wickets = mean(over_wickets, na.rm = TRUE),
+    avg_boundaries = mean(boundaries, na.rm = TRUE),
+    avg_dot_balls = mean(dot_balls, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Visualise average runs by bowling type and tactical phase
+ggplot(
+  section2_summary,
+  aes(x = tactical_phase, y = avg_runs, fill = bowling_category)
+) +
+  geom_col(position = "dodge") +
+  theme_minimal() +
+  labs(
+    title = "Average Runs Conceded by Bowling Type and Tactical Phase",
+    x = "Tactical Phase",
+    y = "Average Runs per Over",
+    fill = "Bowling Type"
+  )
+```
+
+
+```{r section2_bowling_tactics_model, message=FALSE, warning=FALSE}
+# Model 2: Linear Mixed-effects model for runs conceded
+model_2_ME <- lmer(
+  over_total_runs ~ bowling_category * tactical_phase + innings +
+    (1 | match_id) +
+    (1 | bowler),
+  data = df_section_2
+)
+
+# Model summary
+summary(model_2_ME)
+
+# Fixed effect estimates
+section2_fixed_effects <- broom.mixed::tidy(
+  model_2_ME,
+  effects = "fixed",
+  conf.int = TRUE
+)
+
+# Random effect variance components
+section2_random_effects <- broom.mixed::tidy(
+  model_2_ME,
+  effects = "ran_pars"
+)
+
+# Check if singularity is reached in this model 
+isSingular(model_2_ME)
+
+# Final outputs for review
+print(section2_summary)
+print(section2_fixed_effects)
+print(section2_random_effects)
+```
+
+#### spin_vs_pace_difference in differernt phases 
+
+```{r}
+# Estimated phase-specific spin vs pace difference
+spin_phase_effects <- tibble(
+  phase = c(
+    "Mandatory_PP",
+    "Power_Surge_1",
+    "Power_Surge_2",
+    "Middle",
+    "Death"
+  ),
+  spin_vs_pace_difference = c(
+    fixef(model_2_ME)["bowling_categorySpin"],
+    fixef(model_2_ME)["bowling_categorySpin"] +
+      fixef(model_2_ME)["bowling_categorySpin:tactical_phasePower_Surge_1"],
+    fixef(model_2_ME)["bowling_categorySpin"] +
+      fixef(model_2_ME)["bowling_categorySpin:tactical_phasePower_Surge_2"],
+    fixef(model_2_ME)["bowling_categorySpin"] +
+      fixef(model_2_ME)["bowling_categorySpin:tactical_phaseMiddle"],
+    fixef(model_2_ME)["bowling_categorySpin"] +
+      fixef(model_2_ME)["bowling_categorySpin:tactical_phaseDeath"]
+  )
+)
+
+spin_phase_effects
+```
+
+#### Based on the above results predicting match outcomes
+
+```{r section2_match_outcome_model, message=FALSE, warning=FALSE}
+set.seed(42)
+
+spin_preferred_phases <- c(
+  "Mandatory_PP",
+  "Power_Surge_2",
+  "Middle",
+  "Death"
+)
+
+df_section_2_outcome <- df_section_2 %>%
+  mutate(
+    bowling_team_win = factor(
+      if_else(bowling_team == winner, "Yes", "No"),
+      levels = c("No", "Yes")
+    ),
+    is_spin_preferred_phase = tactical_phase %in% spin_preferred_phases,
+    spin_used_in_preferred_phase = if_else(
+      bowling_category == "Spin" & is_spin_preferred_phase,
+      1,
+      0
+    )
+  ) %>%
+  group_by(match_id, bowling_team) %>%
+  summarise(
+    bowling_team_win = first(bowling_team_win),
+    spin_preferred_phase_overs = sum(spin_used_in_preferred_phase, na.rm = TRUE),
+    preferred_phase_runs_conceded = sum(
+      if_else(is_spin_preferred_phase, over_total_runs, 0),
+      na.rm = TRUE
+    ),
+    preferred_phase_wickets = sum(
+      if_else(is_spin_preferred_phase, over_wickets, 0),
+      na.rm = TRUE
+    ),
+    .groups = "drop"
+  ) %>%
+  drop_na(bowling_team_win)
+
+df_section_2_outcome %>%
+  count(bowling_team_win)
+
+outcome_model <- glm(
+  bowling_team_win ~
+    spin_preferred_phase_overs +
+    preferred_phase_runs_conceded +
+    preferred_phase_wickets,
+  data = df_section_2_outcome,
+  family = binomial(link = "logit")
+)
+```
+
+### performance 
+```{r section2_match_outcome_performance, message=FALSE, warning=FALSE}
+summary(outcome_model)
+
+broom::tidy(
+  outcome_model,
+  exponentiate = TRUE,
+  conf.int = TRUE
+)
+
+outcome_split <- initial_split(
+  df_section_2_outcome,
+  prop = 0.8,
+  strata = bowling_team_win
+)
+
+outcome_train <- training(outcome_split)
+outcome_test  <- testing(outcome_split)
+
+outcome_fit <- glm(
+  bowling_team_win ~
+    spin_preferred_phase_overs +
+    preferred_phase_runs_conceded +
+    preferred_phase_wickets,
+  data = outcome_train,
+  family = binomial(link = "logit")
+)
+
+outcome_preds <- outcome_test %>%
+  mutate(
+    .pred_Yes = predict(
+      outcome_fit,
+      newdata = outcome_test,
+      type = "response"
+    ),
+    .pred_No = 1 - .pred_Yes,
+    .pred_class = factor(
+      if_else(.pred_Yes >= 0.5, "Yes", "No"),
+      levels = c("No", "Yes")
+    )
+  )
+
+outcome_metrics <- metric_set(
+  accuracy,
+  roc_auc,
+  brier_class
+)
+
+performance <- outcome_metrics(
+  outcome_preds,
+  truth = bowling_team_win,
+  estimate = .pred_class,
+  .pred_Yes,
+  event_level = "second"
+)
+
+performance
+
+roc_curve(
+  outcome_preds,
+  truth = bowling_team_win,
+  .pred_Yes,
+  event_level = "second"
+) %>%
+  autoplot() +
+  ggtitle("Section 2 Inference Outcome Model — ROC")
+```
+
+## Section 3
+Momentum decision and match outcomes 
+
+### Setup
+```{r section3_momentum_setup, message=FALSE, warning=FALSE}
+pacman::p_load(slider)
+
+# Create Section 3 dataset
+df_section_3 <- df_master %>%
+  arrange(match_id, innings, over) %>%
+  group_by(match_id, innings) %>%
+  mutate(
+    runs_last_3 = slider::slide_dbl(
+      over_total_runs,
+      sum,
+      .before = 2,
+      .complete = FALSE
+    ),
+    wickets_last_3 = slider::slide_dbl(
+      over_wickets,
+      sum,
+      .before = 2,
+      .complete = FALSE
+    ),
+    last_wicket_over = cummax(if_else(over_wickets > 0, over, 0)),
+    overs_since_last_wicket = over - last_wicket_over
+  ) %>%
+  ungroup() %>%
+  mutate(
+    toss_loser = case_when(
+      toss_winner == team1 ~ team2,
+      toss_winner == team2 ~ team1,
+      TRUE ~ NA_character_
+    ),
+
+    batting_team = case_when(
+      toss_decision == "bat" & innings == 1 ~ toss_winner,
+      toss_decision == "bat" & innings == 2 ~ toss_loser,
+      toss_decision == "field" & innings == 1 ~ toss_loser,
+      toss_decision == "field" & innings == 2 ~ toss_winner,
+      TRUE ~ NA_character_
+    ),
+
+    bowling_team = case_when(
+      batting_team == team1 ~ team2,
+      batting_team == team2 ~ team1,
+      TRUE ~ NA_character_
+    ),
+
+    batting_team_win = factor(
+      if_else(batting_team == winner, "Yes", "No"),
+      levels = c("No", "Yes")
+    ),
+
+    batting_team_win_num = if_else(batting_team_win == "Yes", 1, 0),
+
+    innings = factor(innings),
+    tactical_phase = factor(tactical_phase),
+    batting_team = factor(batting_team),
+    bowling_team = factor(bowling_team),
+    match_id = factor(match_id)
+  ) %>%
+  filter(
+    !is.na(batting_team_win_num),
+    !is.na(current_score),
+    !is.na(wickets_lost),
+    !is.na(current_run_rate),
+    !is.na(runs_last_3),
+    !is.na(wickets_last_3),
+    !is.na(overs_since_last_wicket),
+    !is.na(batting_team),
+    !is.na(bowling_team),
+    !is.na(match_id),
+    !is.na(tactical_phase)
+  )
+
+# Basic checks
+df_section_3 %>%
+  count(batting_team_win) %>%
+  print()
+
+df_section_3 %>%
+  group_by(batting_team_win) %>%
+  summarise(
+    rows = n(),
+    avg_current_score = mean(current_score, na.rm = TRUE),
+    avg_wickets_lost = mean(wickets_lost, na.rm = TRUE),
+    avg_current_run_rate = mean(current_run_rate, na.rm = TRUE),
+    avg_runs_last_3 = mean(runs_last_3, na.rm = TRUE),
+    avg_wickets_last_3 = mean(wickets_last_3, na.rm = TRUE),
+    avg_overs_since_last_wicket = mean(overs_since_last_wicket, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  print()
+```
+
+
+```{r section3_momentum_data_split, message=FALSE, warning=FALSE}
+# Scale numeric variables
+df_section_3 <- df_section_3 %>%
+  mutate(
+    current_score_z = as.numeric(scale(current_score)),
+    wickets_lost_z = as.numeric(scale(wickets_lost)),
+    current_run_rate_z = as.numeric(scale(current_run_rate)),
+    runs_last_3_z = as.numeric(scale(runs_last_3)),
+    wickets_last_3_z = as.numeric(scale(wickets_last_3)),
+    overs_since_last_wicket_z = as.numeric(scale(overs_since_last_wicket))
+  )
+```
+
+### Model 
+
+```{r section3_momentum_model, message=FALSE, warning=FALSE}
+# Model 3A: predicting outcome based on current state of the match
+model_3A_current_state_only <- lme4::glmer(
+  batting_team_win_num ~
+    innings +
+    tactical_phase +
+    current_score_z +
+    wickets_lost_z +
+    current_run_rate_z +
+    (1 | batting_team) +
+    (1 | bowling_team) +
+    (1 | match_id),
+  data = df_section_3,
+  family = binomial(link = "logit"),
+  
+)
+
+summary(model_3A_current_state_only)
+
+# Model 3B: predicting outcome based on current state of the match + recent momentum 
+model_3B_momentum <- lme4::glmer(
+  batting_team_win_num ~
+    innings +
+    tactical_phase +
+    current_score_z +
+    wickets_lost_z +
+    current_run_rate_z +
+    runs_last_3_z +
+    wickets_last_3_z +
+    overs_since_last_wicket_z +
+    (1 | batting_team) +
+    (1 | bowling_team) +
+    (1 | match_id),
+  data = df_section_3,
+  family = binomial(link = "logit"),
+)
+
+summary(model_3B_momentum)
+
+# Fixed effect odds ratios
+section3_state_only_or <- broom.mixed::tidy(
+  model_3A_current_state_only,
+  effects = "fixed",
+  exponentiate = TRUE,
+  conf.int = TRUE
+)
+
+section3_momentum_or <- broom.mixed::tidy(
+  model_3B_momentum,
+  effects = "fixed",
+  exponentiate = TRUE,
+  conf.int = TRUE
+)
+
+section3_state_only_or
+section3_momentum_or
+
+# Random effect variance components
+section3_state_random <- broom.mixed::tidy(
+  model_3A_current_state_only,
+  effects = "ran_pars"
+)
+
+section3_momentum_random <- broom.mixed::tidy(
+  model_3B_momentum,
+  effects = "ran_pars"
+)
+
+section3_state_random
+section3_momentum_random
+
+# Model comparison
+section3_model_comparison <- tibble(
+  model = c(
+    "Model 3A: State only",
+    "Model 3B: State + momentum"
+  ),
+  AIC = c(
+    AIC(model_3A_current_state_only),
+    AIC(model_3B_momentum)
+  ),
+  BIC = c(
+    BIC(model_3A_current_state_only),
+    BIC(model_3B_momentum)
+  ),
+  logLik = c(
+    as.numeric(logLik(model_3A_current_state_only)),
+    as.numeric(logLik(model_3B_momentum))
+  ),
+  singular = c(
+    isSingular(model_3A_current_state_only),
+    isSingular(model_3B_momentum)
+  )
+)
+
+section3_model_comparison
+
+# Final outputs
+print(section3_model_comparison)
+print(section3_state_only_or, n = Inf)
+print(section3_momentum_or, n = Inf)
+print(section3_state_random)
+print(section3_momentum_random)
+```
+
+### performance
+
+```{r section3_performance, message=FALSE, warning=FALSE}
+section3_metrics <- metric_set(
+  accuracy,
+  roc_auc,
+  brier_class
+)
+
+
+# Predictions for Model 3A: State only
+
+
+preds_3A <- df_section_3 %>%
+  mutate(
+    .pred_Yes = predict(
+      model_3A_current_state_only,
+      newdata = df_section_3,
+      type = "response",
+      allow.new.levels = TRUE
+    ),
+    .pred_No = 1 - .pred_Yes,
+    .pred_class = factor(
+      if_else(.pred_Yes >= 0.5, "Yes", "No"),
+      levels = c("No", "Yes")
+    ),
+    batting_team_win = factor(
+      batting_team_win,
+      levels = c("No", "Yes")
+    )
+  ) %>%
+  select(
+    batting_team_win,
+    .pred_No,
+    .pred_Yes,
+    .pred_class
+  )
+
+metrics_3A <- section3_metrics(
+  preds_3A,
+  truth = batting_team_win,
+  estimate = .pred_class,
+  .pred_Yes,
+  event_level = "second"
+) %>%
+  mutate(model = "Model 3A: State only")
+
+
+# Predictions for Model 3B: State + momentum
+
+
+preds_3B <- df_section_3 %>%
+  mutate(
+    .pred_Yes = predict(
+      model_3B_momentum,
+      newdata = df_section_3,
+      type = "response",
+      allow.new.levels = TRUE
+    ),
+    .pred_No = 1 - .pred_Yes,
+    .pred_class = factor(
+      if_else(.pred_Yes >= 0.5, "Yes", "No"),
+      levels = c("No", "Yes")
+    ),
+    batting_team_win = factor(
+      batting_team_win,
+      levels = c("No", "Yes")
+    )
+  ) %>%
+  select(
+    batting_team_win,
+    .pred_No,
+    .pred_Yes,
+    .pred_class
+  )
+
+metrics_3B <- section3_metrics(
+  preds_3B,
+  truth = batting_team_win,
+  estimate = .pred_class,
+  .pred_Yes,
+  event_level = "second"
+) %>%
+  mutate(model = "Model 3B: State + momentum")
+
+
+# Performance comparison
+
+
+section3_performance <- bind_rows(
+  metrics_3A,
+  metrics_3B
+) %>%
+  select(model, .metric, .estimate) %>%
+  pivot_wider(
+    names_from = .metric,
+    values_from = .estimate
+  ) %>%
+  left_join(
+    section3_model_comparison %>%
+      select(model, AIC, BIC, logLik),
+    by = "model"
+  )
+
+print(section3_performance)
+
+
+# Confusion matrices
+
+
+cat("\n[Model 3A: State only confusion matrix]\n")
+conf_mat(
+  preds_3A,
+  truth = batting_team_win,
+  estimate = .pred_class
+) %>%
+  print()
+
+cat("\n[Model 3B: State + momentum confusion matrix]\n")
+conf_mat(
+  preds_3B,
+  truth = batting_team_win,
+  estimate = .pred_class
+) %>%
+  print()
+
+
+# ROC comparison
+
+
+roc_3A <- roc_curve(
+  preds_3A,
+  truth = batting_team_win,
+  .pred_Yes,
+  event_level = "second"
+) %>%
+  mutate(model = "Model 3A: Current State only")
+
+roc_3B <- roc_curve(
+  preds_3B,
+  truth = batting_team_win,
+  .pred_Yes,
+  event_level = "second"
+) %>%
+  mutate(model = "Model 3B: Current State + momentum")
+
+bind_rows(roc_3A, roc_3B) %>%
+  ggplot(aes(x = 1 - specificity, y = sensitivity, color = model)) +
+  geom_line(linewidth = 1.1) +
+  geom_abline(linetype = "dashed") +
+  theme_minimal() +
+  labs(
+    title = "Section 3: ROC Comparison",
+    subtitle = "Current State only model vs State + Momentum model",
+    x = "1 - Specificity",
+    y = "Sensitivity",
+    color = "Model"
+  )
+
+
+
+print(section3_performance)
+```
+## Section 4
+
+Powerplay decisions and match outcome
+
+### Setup 
+
+```{r section4_powerplay_setup, message=FALSE, warning=FALSE}
+set.seed(42)
+# Create Section 4 dataset:
+# Pre-Surge powerplay = Mandatory_PP
+# Surge Era powerplay = Power_Surge_1 + Power_Surge_2
+
+df_section_4 <- df_master %>%
+  mutate(
+    powerplay_part = case_when(
+      era == "Pre_Surge" & tactical_phase == "Mandatory_PP" ~ "Powerplay",
+      era == "Surge_Era" & tactical_phase %in% c("Power_Surge_1", "Power_Surge_2") ~ "Powerplay",
+      TRUE ~ "Non_Powerplay"
+    )
+  ) %>%
+  filter(powerplay_part == "Powerplay") %>%
+  mutate(
+    toss_loser = case_when(
+      toss_winner == team1 ~ team2,
+      toss_winner == team2 ~ team1,
+      TRUE ~ NA_character_
+    ),
+    batting_team = case_when(
+      toss_decision == "bat" & innings == 1 ~ toss_winner,
+      toss_decision == "bat" & innings == 2 ~ toss_loser,
+      toss_decision == "field" & innings == 1 ~ toss_loser,
+      toss_decision == "field" & innings == 2 ~ toss_winner,
+      TRUE ~ NA_character_
+    ),
+    bowling_team = case_when(
+      batting_team == team1 ~ team2,
+      batting_team == team2 ~ team1,
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  group_by(match_id, innings) %>%
+  summarise(
+    date = first(date),
+    era = first(era),
+    season = first(season),
+    venue = first(venue),
+    team1 = first(team1),
+    team2 = first(team2),
+    winner = first(winner),
+    toss_winner = first(toss_winner),
+    toss_decision = first(toss_decision),
+    batting_team = first(batting_team),
+    bowling_team = first(bowling_team),
+
+    pp_overs = n(),
+    pp_runs = sum(over_total_runs, na.rm = TRUE),
+    pp_run_rate = pp_runs / pp_overs,
+    pp_wickets_lost = sum(over_wickets, na.rm = TRUE),
+    pp_boundaries = sum(boundaries, na.rm = TRUE),
+    pp_dot_balls = sum(dot_balls, na.rm = TRUE),
+
+    pp1_runs = sum(
+      if_else(tactical_phase %in% c("Mandatory_PP", "Power_Surge_1"), over_total_runs, 0),
+      na.rm = TRUE
+    ),
+    pp1_wickets = sum(
+      if_else(tactical_phase %in% c("Mandatory_PP", "Power_Surge_1"), over_wickets, 0),
+      na.rm = TRUE
+    ),
+    pp1_boundaries = sum(
+      if_else(tactical_phase %in% c("Mandatory_PP", "Power_Surge_1"), boundaries, 0),
+      na.rm = TRUE
+    ),
+
+    pp2_runs = sum(
+      if_else(tactical_phase == "Power_Surge_2", over_total_runs, 0),
+      na.rm = TRUE
+    ),
+    pp2_wickets = sum(
+      if_else(tactical_phase == "Power_Surge_2", over_wickets, 0),
+      na.rm = TRUE
+    ),
+    pp2_boundaries = sum(
+      if_else(tactical_phase == "Power_Surge_2", boundaries, 0),
+      na.rm = TRUE
+    ),
+
+    .groups = "drop"
+  ) %>%
+  mutate(
+    batting_team_win = factor(
+      if_else(batting_team == winner, "Yes", "No"),
+      levels = c("No", "Yes")
+    ),
+    batting_team_win_num = if_else(batting_team_win == "Yes", 1, 0),
+
+    era = factor(era, levels = c("Pre_Surge", "Surge_Era")),
+    toss_decision = factor(toss_decision, levels = c("bat", "field")),
+    batting_team = factor(batting_team),
+    bowling_team = factor(bowling_team),
+    season = factor(season),
+    venue = factor(venue)
+  ) %>%
+  drop_na(
+    era,
+    batting_team,
+    bowling_team,
+    batting_team_win_num,
+    pp_run_rate,
+    pp_wickets_lost,
+    pp_boundaries,
+    pp_dot_balls
+  )
+
+# Split datasets for descriptive checking
+df_section_4_pre <- df_section_4 %>%
+  filter(era == "Pre_Surge")
+
+df_section_4_surge <- df_section_4 %>%
+  filter(era == "Surge_Era")
+
+# Basic counts
+df_section_4 %>%
+  count(era, batting_team_win) %>%
+  print()
+
+# Check number of powerplay overs by era
+df_section_4 %>%
+  count(era, pp_overs) %>%
+  print(n = Inf)
+
+# Summary by era
+df_section_4 %>%
+  group_by(era) %>%
+  summarise(
+    rows = n(),
+    matches = n_distinct(match_id),
+    avg_pp_overs = mean(pp_overs, na.rm = TRUE),
+    avg_pp_runs = mean(pp_runs, na.rm = TRUE),
+    avg_pp_run_rate = mean(pp_run_rate, na.rm = TRUE),
+    avg_pp_wickets = mean(pp_wickets_lost, na.rm = TRUE),
+    avg_pp_boundaries = mean(pp_boundaries, na.rm = TRUE),
+    avg_pp_dot_balls = mean(pp_dot_balls, na.rm = TRUE),
+    batting_team_win_rate = mean(batting_team_win == "Yes", na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  print()
+
+# Winners vs losers by era
+df_section_4 %>%
+  group_by(era, batting_team_win) %>%
+  summarise(
+    rows = n(),
+    avg_pp_run_rate = mean(pp_run_rate, na.rm = TRUE),
+    avg_pp_wickets = mean(pp_wickets_lost, na.rm = TRUE),
+    avg_pp_boundaries = mean(pp_boundaries, na.rm = TRUE),
+    avg_pp_dot_balls = mean(pp_dot_balls, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  print()
+```
+
+### Model
+```{r section4_powerplay_model, message=FALSE, warning=FALSE}
+set.seed(42)
+
+# Scale numeric predictors
+df_section_4 <- df_section_4 %>%
+  mutate(
+    pp_run_rate_z = as.numeric(scale(pp_run_rate)),
+    pp_wickets_lost_z = as.numeric(scale(pp_wickets_lost)),
+    pp_boundaries_z = as.numeric(scale(pp_boundaries)),
+    pp_dot_balls_z = as.numeric(scale(pp_dot_balls))
+  )
+
+# Mixed-effects model with era( pre surge or post surge) as interactions
+model_4_powerplay_era <- lme4::glmer(
+  batting_team_win_num ~
+    era * (
+      pp_run_rate_z +
+        pp_wickets_lost_z +
+        pp_boundaries_z +
+        pp_dot_balls_z
+    ) +
+    toss_decision +
+    (1 | batting_team) +
+    (1 | bowling_team),
+  data = df_section_4,
+  family = binomial(link = "logit")
+)
+
+summary(model_4_powerplay_era)
+
+# Odds ratios for fixed effects
+section4_powerplay_or <- broom.mixed::tidy(
+  model_4_powerplay_era,
+  effects = "fixed",
+  exponentiate = TRUE,
+  conf.int = TRUE
+)
+
+# Random effect variance components
+section4_powerplay_random <- broom.mixed::tidy(
+  model_4_powerplay_era,
+  effects = "ran_pars"
+)
+
+# Model fit summary
+section4_model_summary <- tibble(
+  model = "Model 4: Powerplay era interaction",
+  AIC = AIC(model_4_powerplay_era),
+  BIC = BIC(model_4_powerplay_era),
+  logLik = as.numeric(logLik(model_4_powerplay_era)),
+  singular = isSingular(model_4_powerplay_era)
+)
+
+
+# Era-specific effects
+fixed_4 <- fixef(model_4_powerplay_era)
+
+section4_era_effects <- tibble(
+  predictor = c(
+    "pp_run_rate_z",
+    "pp_wickets_lost_z",
+    "pp_boundaries_z",
+    "pp_dot_balls_z"
+  ),
+  pre_surge_effect = c(
+    fixed_4["pp_run_rate_z"],
+    fixed_4["pp_wickets_lost_z"],
+    fixed_4["pp_boundaries_z"],
+    fixed_4["pp_dot_balls_z"]
+  ),
+  surge_era_effect = c(
+    fixed_4["pp_run_rate_z"] + fixed_4["eraSurge_Era:pp_run_rate_z"],
+    fixed_4["pp_wickets_lost_z"] + fixed_4["eraSurge_Era:pp_wickets_lost_z"],
+    fixed_4["pp_boundaries_z"] + fixed_4["eraSurge_Era:pp_boundaries_z"],
+    fixed_4["pp_dot_balls_z"] + fixed_4["eraSurge_Era:pp_dot_balls_z"]
+  )
+) %>%
+  mutate(
+    pre_surge_odds_ratio = exp(pre_surge_effect),
+    surge_era_odds_ratio = exp(surge_era_effect)
+  )
+
+
+# Final outputs
+print(section4_powerplay_or, n = Inf)
+
+# random effect parameters 
+print(section4_powerplay_random)
+print(section4_model_summary)
+print(section4_era_effects)
+```
+
+### Performance 
+
+```{r section4_powerplay_performance, message=FALSE, warning=FALSE}
+section4_metrics <- metric_set(
+  accuracy,
+  roc_auc,
+  brier_class
+)
+
+
+section4_preds <- df_section_4 %>%
+  mutate(
+    .pred_Yes = predict(
+      model_4_powerplay_era,
+      newdata = df_section_4,
+      type = "response",
+      allow.new.levels = TRUE
+    ),
+    .pred_No = 1 - .pred_Yes,
+    .pred_class = factor(
+      if_else(.pred_Yes >= 0.5, "Yes", "No"),
+      levels = c("No", "Yes")
+    ),
+    batting_team_win = factor(
+      batting_team_win,
+      levels = c("No", "Yes")
+    )
+  ) %>%
+  select(
+    batting_team_win,
+    .pred_No,
+    .pred_Yes,
+    .pred_class
+  )
+
+# Performance metrics
+section4_performance <- section4_metrics(
+  section4_preds,
+  truth = batting_team_win,
+  estimate = .pred_class,
+  .pred_Yes,
+  event_level = "second"
+) 
+
+print(section4_performance)
+
+# Confusion matrix
+cat("\n[Section 4: Confusion matrix]\n")
+conf_mat(
+  section4_preds,
+  truth = batting_team_win,
+  estimate = .pred_class
+) %>%
+  print()
+
+# ROC curve
+section4_roc <- roc_curve(
+  section4_preds,
+  truth = batting_team_win,
+  .pred_Yes,
+  event_level = "second"
+)
+
+autoplot(section4_roc) +
+  ggtitle("Section 4: Powerplay Era Interaction Model — ROC")
+
+```
