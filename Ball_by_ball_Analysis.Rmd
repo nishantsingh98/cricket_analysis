@@ -1565,7 +1565,7 @@ df_section_3 %>%
   print()
 ```
 
-
+### Split
 ```{r section3_momentum_data_split, message=FALSE, warning=FALSE}
 set.seed(42)
 
@@ -2057,20 +2057,78 @@ df_section_4 %>%
   print()
 ```
 
-### Model
-```{r section4_powerplay_model, message=FALSE, warning=FALSE}
+### Split
+
+```{r section4_powerplay_data_split, message=FALSE, warning=FALSE}
 set.seed(42)
 
-# Scale numeric predictors
-df_section_4 <- df_section_4 %>%
-  mutate(
-    pp_run_rate_z = as.numeric(scale(pp_run_rate)),
-    pp_wickets_lost_z = as.numeric(scale(pp_wickets_lost)),
-    pp_boundaries_z = as.numeric(scale(pp_boundaries)),
-    pp_dot_balls_z = as.numeric(scale(pp_dot_balls))
+section4_match_ids <- unique(df_section_4$match_id)
+
+section4_train_ids <- sample(
+  section4_match_ids,
+  size = floor(0.8 * length(section4_match_ids))
+)
+
+section4_test_ids <- setdiff(section4_match_ids, section4_train_ids)
+
+section4_train_raw <- df_section_4 %>%
+  filter(match_id %in% section4_train_ids)
+
+section4_test_raw <- df_section_4 %>%
+  filter(match_id %in% section4_test_ids)
+
+section4_numeric_vars <- c(
+  "pp_run_rate",
+  "pp_wickets_lost",
+  "pp_boundaries",
+  "pp_dot_balls"
+)
+
+section4_scaling_values <- section4_train_raw %>%
+  summarise(
+    across(
+      all_of(section4_numeric_vars),
+      list(
+        mean = ~ mean(.x, na.rm = TRUE),
+        sd = ~ sd(.x, na.rm = TRUE)
+      )
+    )
   )
 
-# Mixed-effects model with era( pre surge or post surge) as interactions
+scale_section4_data <- function(data, scaling_values) {
+  data %>%
+    mutate(
+      pp_run_rate_z =
+        (pp_run_rate - scaling_values$pp_run_rate_mean) /
+        scaling_values$pp_run_rate_sd,
+      
+      pp_wickets_lost_z =
+        (pp_wickets_lost - scaling_values$pp_wickets_lost_mean) /
+        scaling_values$pp_wickets_lost_sd,
+      
+      pp_boundaries_z =
+        (pp_boundaries - scaling_values$pp_boundaries_mean) /
+        scaling_values$pp_boundaries_sd,
+      
+      pp_dot_balls_z =
+        (pp_dot_balls - scaling_values$pp_dot_balls_mean) /
+        scaling_values$pp_dot_balls_sd
+    )
+}
+
+section4_train <- scale_section4_data(
+  section4_train_raw,
+  section4_scaling_values
+)
+
+section4_test <- scale_section4_data(
+  section4_test_raw,
+  section4_scaling_values
+)
+```
+
+### Model
+```{r section4_powerplay_model, message=FALSE, warning=FALSE}
 model_4_powerplay_era <- lme4::glmer(
   batting_team_win_num ~
     era * (
@@ -2082,13 +2140,12 @@ model_4_powerplay_era <- lme4::glmer(
     toss_decision +
     (1 | batting_team) +
     (1 | bowling_team),
-  data = df_section_4,
+  data = section4_train,
   family = binomial(link = "logit")
 )
 
 summary(model_4_powerplay_era)
 
-# Odds ratios for fixed effects
 section4_powerplay_or <- broom.mixed::tidy(
   model_4_powerplay_era,
   effects = "fixed",
@@ -2096,13 +2153,11 @@ section4_powerplay_or <- broom.mixed::tidy(
   conf.int = TRUE
 )
 
-# Random effect variance components
 section4_powerplay_random <- broom.mixed::tidy(
   model_4_powerplay_era,
   effects = "ran_pars"
 )
 
-# Model fit summary
 section4_model_summary <- tibble(
   model = "Model 4: Powerplay era interaction",
   AIC = AIC(model_4_powerplay_era),
@@ -2111,8 +2166,6 @@ section4_model_summary <- tibble(
   singular = isSingular(model_4_powerplay_era)
 )
 
-
-# Era-specific effects
 fixed_4 <- fixef(model_4_powerplay_era)
 
 section4_era_effects <- tibble(
@@ -2129,10 +2182,17 @@ section4_era_effects <- tibble(
     fixed_4["pp_dot_balls_z"]
   ),
   surge_era_effect = c(
-    fixed_4["pp_run_rate_z"] + fixed_4["eraSurge_Era:pp_run_rate_z"],
-    fixed_4["pp_wickets_lost_z"] + fixed_4["eraSurge_Era:pp_wickets_lost_z"],
-    fixed_4["pp_boundaries_z"] + fixed_4["eraSurge_Era:pp_boundaries_z"],
-    fixed_4["pp_dot_balls_z"] + fixed_4["eraSurge_Era:pp_dot_balls_z"]
+    fixed_4["pp_run_rate_z"] +
+      fixed_4["eraSurge_Era:pp_run_rate_z"],
+    
+    fixed_4["pp_wickets_lost_z"] +
+      fixed_4["eraSurge_Era:pp_wickets_lost_z"],
+    
+    fixed_4["pp_boundaries_z"] +
+      fixed_4["eraSurge_Era:pp_boundaries_z"],
+    
+    fixed_4["pp_dot_balls_z"] +
+      fixed_4["eraSurge_Era:pp_dot_balls_z"]
   )
 ) %>%
   mutate(
@@ -2140,14 +2200,10 @@ section4_era_effects <- tibble(
     surge_era_odds_ratio = exp(surge_era_effect)
   )
 
-
-# Final outputs
-print(section4_powerplay_or, n = Inf)
-
-# random effect parameters 
-print(section4_powerplay_random)
-print(section4_model_summary)
-print(section4_era_effects)
+section4_powerplay_or
+section4_powerplay_random
+section4_model_summary
+section4_era_effects
 ```
 
 ### Performance 
@@ -2159,61 +2215,130 @@ section4_metrics <- metric_set(
   brier_class
 )
 
-
-section4_preds <- df_section_4 %>%
-  mutate(
-    .pred_Yes = predict(
-      model_4_powerplay_era,
-      newdata = df_section_4,
-      type = "response",
-      allow.new.levels = TRUE
-    ),
-    .pred_No = 1 - .pred_Yes,
-    .pred_class = factor(
-      if_else(.pred_Yes >= 0.5, "Yes", "No"),
-      levels = c("No", "Yes")
-    ),
-    batting_team_win = factor(
+make_section4_preds <- function(model, data) {
+  data %>%
+    mutate(
+      .pred_Yes = predict(
+        model,
+        newdata = data,
+        type = "response",
+        allow.new.levels = TRUE
+      ),
+      .pred_No = 1 - .pred_Yes,
+      .pred_class = factor(
+        if_else(.pred_Yes >= 0.5, "Yes", "No"),
+        levels = c("No", "Yes")
+      ),
+      batting_team_win = factor(
+        batting_team_win,
+        levels = c("No", "Yes")
+      )
+    ) %>%
+    select(
       batting_team_win,
-      levels = c("No", "Yes")
+      .pred_No,
+      .pred_Yes,
+      .pred_class
     )
-  ) %>%
-  select(
-    batting_team_win,
-    .pred_No,
+}
+
+evaluate_section4_model <- function(model, train_data, test_data, model_name) {
+  
+  train_preds <- make_section4_preds(model, train_data)
+  test_preds <- make_section4_preds(model, test_data)
+  
+  train_metrics <- section4_metrics(
+    train_preds,
+    truth = batting_team_win,
+    estimate = .pred_class,
     .pred_Yes,
-    .pred_class
+    event_level = "second"
+  ) %>%
+    mutate(
+      model = model_name,
+      dataset = "Train"
+    )
+  
+  test_metrics <- section4_metrics(
+    test_preds,
+    truth = batting_team_win,
+    estimate = .pred_class,
+    .pred_Yes,
+    event_level = "second"
+  ) %>%
+    mutate(
+      model = model_name,
+      dataset = "Test"
+    )
+  
+  train_roc <- roc_curve(
+    train_preds,
+    truth = batting_team_win,
+    .pred_Yes,
+    event_level = "second"
+  ) %>%
+    mutate(
+      model = model_name,
+      dataset = "Train"
+    )
+  
+  test_roc <- roc_curve(
+    test_preds,
+    truth = batting_team_win,
+    .pred_Yes,
+    event_level = "second"
+  ) %>%
+    mutate(
+      model = model_name,
+      dataset = "Test"
+    )
+  
+  list(
+    metrics = bind_rows(train_metrics, test_metrics),
+    roc = bind_rows(train_roc, test_roc),
+    train_preds = train_preds,
+    test_preds = test_preds
   )
+}
 
-# Performance metrics
-section4_performance <- section4_metrics(
-  section4_preds,
-  truth = batting_team_win,
-  estimate = .pred_class,
-  .pred_Yes,
-  event_level = "second"
-) 
-
-print(section4_performance)
-
-# Confusion matrix
-cat("\n[Section 4: Confusion matrix]\n")
-conf_mat(
-  section4_preds,
-  truth = batting_team_win,
-  estimate = .pred_class
-) %>%
-  print()
-
-# ROC curve
-section4_roc <- roc_curve(
-  section4_preds,
-  truth = batting_team_win,
-  .pred_Yes,
-  event_level = "second"
+section4_eval <- evaluate_section4_model(
+  model = model_4_powerplay_era,
+  train_data = section4_train,
+  test_data = section4_test,
+  model_name = "Model 4: Powerplay era interaction"
 )
 
-autoplot(section4_roc) +
-  ggtitle("Section 4: Powerplay Era Interaction Model — ROC")
+section4_performance <- section4_eval$metrics %>%
+  select(model, dataset, .metric, .estimate) %>%
+  pivot_wider(
+    names_from = .metric,
+    values_from = .estimate
+  ) %>%
+  left_join(
+    section4_model_summary %>%
+      select(model, AIC, BIC, logLik, singular),
+    by = "model"
+  )
 
+section4_roc <- section4_eval$roc
+
+section4_performance
+
+conf_mat(
+  section4_eval$test_preds,
+  truth = batting_team_win,
+  estimate = .pred_class
+)
+
+section4_roc %>%
+  ggplot(aes(x = 1 - specificity, y = sensitivity, color = dataset)) +
+  geom_line(linewidth = 1.1) +
+  geom_abline(linetype = "dashed") +
+  theme_minimal() +
+  labs(
+    title = "Section 4: Train vs Test ROC Comparison",
+    x = "1 - Specificity",
+    y = "Sensitivity",
+    color = "Dataset"
+  )
 ```
