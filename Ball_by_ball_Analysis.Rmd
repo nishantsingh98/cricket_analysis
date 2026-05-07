@@ -834,8 +834,7 @@ df_section_1 %>%
 
 # Check outcome balance
 df_section_1 %>%
-  count(toss_win_game_win) %>%
-  print()
+  count(toss_win_game_win)
 
 # Check checkpoints by innings
 df_section_1 %>%
@@ -1547,8 +1546,7 @@ df_section_3 <- df_master %>%
 
 # Basic checks
 df_section_3 %>%
-  count(batting_team_win) %>%
-  print()
+  count(batting_team_win) 
 
 df_section_3 %>%
   group_by(batting_team_win) %>%
@@ -1745,8 +1743,8 @@ section3_model_comparison
 
 # Final outputs
 print(section3_model_comparison)
-print(section3_state_only_or, n = Inf)
-print(section3_momentum_or, n = Inf)
+# print(section3_state_only_or, n = Inf)
+# print(section3_momentum_or, n = Inf)
 print(section3_state_random)
 print(section3_momentum_random)
 ```
@@ -2018,13 +2016,11 @@ df_section_4_surge <- df_section_4 %>%
 
 # Basic counts
 df_section_4 %>%
-  count(era, batting_team_win) %>%
-  print()
+  count(era, batting_team_win)
 
 # Check number of powerplay overs by era
 df_section_4 %>%
-  count(era, pp_overs) %>%
-  print(n = Inf)
+  count(era, pp_overs)
 
 # Summary by era
 df_section_4 %>%
