@@ -315,32 +315,55 @@ ggplot(surge_over_profile, aes(x = over, y = avg_runs, color = era)) +
 
 
 ```{r}
-# Boundary rate and dot-ball rate by match phase
-phase_style <- df_master %>%
-  group_by(match_phase) %>%
-  summarise(
-    avg_boundaries = mean(boundaries, na.rm = TRUE),
-    avg_dot_balls = mean(dot_balls, na.rm = TRUE),
-    .groups = "drop"
-  )
-
-phase_style
-
-
-# Boundary rate and dot-ball rate by tactical phase
-tactical_phase_style <- df_master %>%
+# tactical phase wise performance
+tactical_phase_performance <- df_master %>%
   group_by(tactical_phase) %>%
   summarise(
+    avg_runs = mean(over_total_runs, na.rm = TRUE),
+    avg_wickets = mean(over_wickets, na.rm = TRUE),
     avg_boundaries = mean(boundaries, na.rm = TRUE),
     avg_dot_balls = mean(dot_balls, na.rm = TRUE),
     .groups = "drop"
   )
 
-tactical_phase_style
+tactical_phase_performance
+
+tactical_phase_performance_long <- tactical_phase_performance %>%
+  pivot_longer(
+    cols = c(avg_runs, avg_wickets, avg_boundaries, avg_dot_balls),
+    names_to = "metric",
+    values_to = "value"
+  )
+
+ggplot(tactical_phase_performance_long, aes(x = tactical_phase, y = value, fill = metric)) +
+  geom_col(position = position_dodge(width = 0.8)) +
+  theme_minimal() +
+  labs(
+    title = "Tactical Phase-wise Performance",
+    x = "Tactical Phase",
+    y = "Average per Over",
+    fill = "Metric"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 25)
+  )
+
+ggplot(tactical_phase_performance_long, aes(x = tactical_phase, y = value, fill = tactical_phase)) +
+  geom_col(show.legend = TRUE) +
+  facet_wrap(~ metric, scales = "free_y") + # own scale
+  theme_minimal() +
+  labs(
+    title = "Average Performance per Over by Tactical Phase",
+    x = "Tactical Phase",
+    y = "Average per Over"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 90)
+  )
 ```
 
 ```{r}
-# Death over performance including Power Surge
+# Death over performance
 death_over_performance <- df_master %>%
   filter(match_phase == "Death") %>%
   group_by(era) %>%
@@ -354,23 +377,61 @@ death_over_performance <- df_master %>%
   )
 
 death_over_performance
+```
 
-
-# Death over performance excluding Power Surge
-normal_death_performance <- df_master %>%
-  filter(tactical_phase == "Death") %>%
-  group_by(era) %>%
+```{r}
+# Spin vs pace
+spin_vs_pace <- df_master %>%
+  filter(bowling_category %in% c("Spin", "Pace")) %>%
+  group_by( bowling_category) %>%
   summarise(
-    death_overs = n(),
+    overs = n(),
     avg_runs = mean(over_total_runs, na.rm = TRUE),
     avg_wickets = mean(over_wickets, na.rm = TRUE),
-    avg_boundaries = mean(boundaries, na.rm = TRUE),
-    avg_dot_balls = mean(dot_balls, na.rm = TRUE),
+    .groups = "drop"
+  )
+spin_vs_pace
+
+spin_pace_phase <- df_master %>%
+  filter(bowling_category %in% c("Spin", "Pace")) %>%
+  group_by(tactical_phase, bowling_category) %>%
+  summarise(
+    overs = n(),
+    avg_runs = mean(over_total_runs, na.rm = TRUE),
+    avg_wickets = mean(over_wickets, na.rm = TRUE),
     .groups = "drop"
   )
 
-normal_death_performance
+spin_pace_phase
+
+
+ggplot(spin_pace_phase, aes(x = tactical_phase, y = avg_runs, fill = bowling_category)) +
+  geom_col(position = position_dodge(width = 0.8)) +
+  theme_minimal() +
+  labs(
+    title = "Spin and Pace Runs Conceded by Tactical Phase",
+    subtitle = "Average runs conceded per over",
+    x = "Tactical Phase",
+    y = "Average Runs Conceded",
+    fill = "Bowling Style"
+  ) +
+  theme(axis.text.x = element_text(angle = 25))
+
+
+ggplot(spin_pace_phase, aes(x = tactical_phase, y = avg_wickets, fill = bowling_category)) +
+  geom_col(position = position_dodge(width = 0.8)) +
+  theme_minimal() +
+  labs(
+    title = "Spin and Pace Wickets by Tactical Phase",
+    subtitle = "Average wickets taken per over",
+    x = "Tactical Phase",
+    y = "Average Wickets",
+    fill = "Bowling Style"
+  ) +
+  theme(axis.text.x = element_text(angle = 25))
 ```
+
+
 
 ```{r}
 colnames(df_master)
@@ -519,7 +580,7 @@ df_section_1 %>%
 
 
 ### Model A, B, C 
-```{r part_b_section1_partA, include=FALSE}
+```{r part_b_section1_partA}
 set.seed(42)
 
 # Match-level train/test split
@@ -568,7 +629,8 @@ section1_metrics <- metric_set(
     preds,
     truth = toss_win_game_win,
     estimate = .pred_class,
-    .pred_Yes
+    .pred_Yes,
+    event_level = "second"
   ) %>%
     mutate(model = model_name)
 
@@ -685,6 +747,97 @@ summary(extract_fit_engine(model_B$fit))
 summary(extract_fit_engine(model_C$fit))
 
 print(section1_comparison)
+```
+
+```{r section1_train_performance}
+# Training predictions for Models A, B, C
+
+make_train_preds_logit <- function(model_obj, train_data) {
+  predict(model_obj$fit, new_data = train_data, type = "prob") %>%
+    bind_cols(predict(model_obj$fit, new_data = train_data, type = "class")) %>%
+    bind_cols(train_data %>% select(toss_win_game_win))
+}
+
+model_A_train_preds <- make_train_preds_logit(model_A, section1_train)
+model_B_train_preds <- make_train_preds_logit(model_B, section1_train)
+model_C_train_preds <- make_train_preds_logit(model_C, section1_train)
+
+model_A_train_metrics <- section1_metrics(
+  model_A_train_preds,
+  truth = toss_win_game_win,
+  estimate = .pred_class,
+  .pred_Yes,
+  event_level = "second"
+) %>%
+  mutate(
+    model = "Model A: Part A baseline",
+    dataset = "Train"
+  )
+
+model_B_train_metrics <- section1_metrics(
+  model_B_train_preds,
+  truth = toss_win_game_win,
+  estimate = .pred_class,
+  .pred_Yes,
+  event_level = "second"
+) %>%
+  mutate(
+    model = "Model B: Team fixed effects",
+    dataset = "Train"
+  )
+
+model_C_train_metrics <- section1_metrics(
+  model_C_train_preds,
+  truth = toss_win_game_win,
+  estimate = .pred_class,
+  .pred_Yes,
+  event_level = "second"
+) %>%
+  mutate(
+    model = "Model C: Team FE + phase-aware state",
+    dataset = "Train"
+  )
+
+
+# Convert existing test metrics into the same format
+
+section1_test_metrics <- bind_rows(
+  model_A$metrics,
+  model_B$metrics,
+  model_C$metrics
+) %>%
+  mutate(dataset = "Test")
+
+section1_aic_table <- tibble(
+  model = c(
+    model_A$name,
+    model_B$name,
+    model_C$name
+  ),
+  AIC = c(
+    model_A$aic,
+    model_B$aic,
+    model_C$aic
+  )
+)
+
+# Final train/test performance table
+
+section1_train_test_performance <- bind_rows(
+  model_A_train_metrics,
+  model_B_train_metrics,
+  model_C_train_metrics,
+  section1_test_metrics
+) %>%
+  select(model, dataset, .metric, .estimate) %>%
+  pivot_wider(
+    names_from = .metric,
+    values_from = .estimate
+  ) %>% left_join(
+    section1_aic_table,
+    by = "model"
+  )
+section1_train_test_performance
 ```
 
 
@@ -877,8 +1030,6 @@ summary(model_D_mixed)
 ```
 
 
-
-
 ## Section 2
 Bowling tactics by phase of the match
 
@@ -962,7 +1113,7 @@ ggplot(
 ```{r section2_bowling_tactics_model, message=FALSE, warning=FALSE}
 # Model 2: Linear Mixed-effects model for runs conceded
 model_2_ME <- lmer(
-  over_total_runs ~ bowling_category * tactical_phase + innings +
+  over_total_runs ~ bowling_category * tactical_phase + innings + 
     (1 | match_id) +
     (1 | bowler),
   data = df_section_2
@@ -1126,7 +1277,6 @@ outcome_metrics <- metric_set(
 performance <- outcome_metrics(
   outcome_preds,
   truth = bowling_team_win,
-  estimate = .pred_class,
   .pred_Yes,
   event_level = "second"
 )
@@ -1140,8 +1290,11 @@ roc_curve(
   event_level = "second"
 ) %>%
   autoplot() +
-  ggtitle("Section 2 Inference Outcome Model — ROC")
+  ggtitle("Section 2 outcome model — ROC")
 ```
+
+
+
 
 ## Section 3
 Momentum decision and match outcomes 
@@ -1568,6 +1721,7 @@ section3_roc %>%
     color = "Dataset"
   )
 ```
+
 ## Section 4
 
 Powerplay decisions and match outcome
