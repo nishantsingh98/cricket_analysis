@@ -292,7 +292,6 @@ ggplot(over_profile, aes(x = over, y = avg_runs, color = factor(innings))) +
     color = "Innings"
   )
 
-
 # Before vs after Power Surge by over
 surge_over_profile <- df_master %>%
   group_by(era, over) %>%
@@ -312,8 +311,10 @@ ggplot(surge_over_profile, aes(x = over, y = avg_runs, color = era)) +
     y = "Average Runs",
     color = "Era"
   )
+```
 
 
+```{r}
 # Boundary rate and dot-ball rate by match phase
 phase_style <- df_master %>%
   group_by(match_phase) %>%
@@ -336,8 +337,9 @@ tactical_phase_style <- df_master %>%
   )
 
 tactical_phase_style
+```
 
-
+```{r}
 # Death over performance including Power Surge
 death_over_performance <- df_master %>%
   filter(match_phase == "Death") %>%
@@ -369,145 +371,6 @@ normal_death_performance <- df_master %>%
 
 normal_death_performance
 ```
-
-<!--
-Logic needs to be changed for EDA since phase level logic was flawed 
-#EDA V1 wickets 
-```{r }
-unique(df_master$match_phase)
-unique(df_master$pp_type)
-# Runs by match phase
-df_master %>%
-  group_by(match_phase) %>%
-  summarise(
-    avg_runs = mean(over_total_runs, na.rm = TRUE),
-    avg_wickets = mean(over_wickets, na.rm = TRUE),
-    avg_boundaries = mean(boundaries, na.rm = TRUE)
-  )
-
-df_master %>%
-  group_by(match_phase, bowling_category) %>%
-  summarise(
-    avg_runs = mean(over_total_runs, na.rm = TRUE),
-    avg_wickets = mean(over_wickets, na.rm = TRUE),
-    .groups = "drop"
-  )
-
-# Since the Power Surge rule was introduced on 10 December 2020, the exploratory analysis compares matches played before and after this date. Before the rule change innings were divided into three phases: Mandatory Powerplay, Middle, and Death. After the introduction of the Power Surge, a fourth phase, Power Surge, was added. Therefore, the analysis examines whether scoring patterns, wicket loss, boundary frequency, and bowling effectiveness changed across phases between the two periods.
-
-# Power Surge introduction date
-surge_intro_date <- as.Date("2020-12-10")
-
-df_eda <- df_master %>%
-  mutate(
-    date = as.Date(date),
-    surge_period = case_when(
-      date < surge_intro_date ~ "Before Power Surge",
-      TRUE ~ "After Power Surge"
-    )
-  )
-
-# Summary of scoring by phase and period
-bowling_phase_period_summary <- df_eda %>%
-  group_by(surge_period, match_phase, bowling_category) %>%
-  summarise(
-    overs = n(),
-    avg_runs = mean(over_total_runs, na.rm = TRUE),
-    avg_wickets = mean(over_wickets, na.rm = TRUE),
-    .groups = "drop"
-  )
-
-# Visualise bowling type effect on runs
-ggplot(bowling_phase_period_summary,
-       aes(x = match_phase, y = avg_runs, fill = bowling_category)) +
-  geom_col(position = "dodge") +
-  facet_wrap(~ surge_period) +
-  theme_minimal() +
-  labs(
-    title = "Average Runs per Over by Bowling Type and Match Phase",
-    x = "Match Phase",
-    y = "Average Runs per Over",
-    fill = "Bowling Type"
-  )
-
-# Visualise bowling type effect on wickets
-ggplot(bowling_phase_period_summary,
-       aes(x = match_phase, y = avg_wickets, fill = bowling_category)) +
-  geom_col(position = "dodge") +
-  facet_wrap(~ surge_period) +
-  theme_minimal() +
-  labs(
-    title = "Average Wickets per Over by Bowling Type and Match Phase",
-    x = "Match Phase",
-    y = "Average Wickets per Over",
-    fill = "Bowling Type"
-  )
-```
-
-
-# Eda v2 Average runs Scored 
-```{r }
-over_profile <- df_master %>%
-  group_by(innings, over) %>%
-  summarise(
-    avg_runs = mean(over_total_runs, na.rm = TRUE),
-    avg_wickets = mean(over_wickets, na.rm = TRUE),
-    avg_boundaries = mean(boundaries, na.rm = TRUE),
-    .groups = "drop"
-  )
-
-ggplot(over_profile, aes(x = over, y = avg_runs, color = factor(innings))) +
-  geom_line(linewidth = 1.1) +
-  geom_point() +
-  theme_minimal() +
-  labs(
-    title = "Average Runs per Over by Innings",
-    x = "Over",
-    y = "Average Runs",
-    color = "Innings"
-  )
-
-
-# Before vs after Power Surge by over
-surge_over_profile <- df_master %>%
-  mutate(
-    surge_period = if_else(
-      as.Date(date) < as.Date("2020-12-10"),
-      "Before Power Surge",
-      "After Power Surge"
-    )
-  ) %>%
-  group_by(surge_period, over) %>%
-  summarise(
-    avg_runs = mean(over_total_runs, na.rm = TRUE),
-    .groups = "drop"
-  )
-
-
-ggplot(surge_over_profile, aes(x = over, y = avg_runs, color = surge_period)) +
-  geom_line(linewidth = 1.1) +
-  geom_point() +
-  theme_minimal() +
-  labs(
-    title = "Average Runs per Over Before and After Power Surge Introduction",
-    x = "Over",
-    y = "Average Runs",
-    color = "Period"
-  )
-
-
-# Boundary rate and dot-ball rate by phase
-phase_style <- df_master %>%
-  group_by(match_phase) %>%
-  summarise(
-    avg_boundaries = mean(boundaries, na.rm = TRUE),
-    avg_dot_balls = mean(dot_balls, na.rm = TRUE),
-    .groups = "drop"
-  )
-
-phase_style
-```
--->
 
 ```{r}
 colnames(df_master)
@@ -1800,7 +1663,7 @@ df_section_4 <- df_master %>%
       levels = c("No", "Yes")
     ),
     batting_team_win_num = if_else(batting_team_win == "Yes", 1, 0),
-
+    innings = factor(innings),
     era = factor(era, levels = c("Pre_Surge", "Surge_Era")),
     toss_decision = factor(toss_decision, levels = c("bat", "field")),
     batting_team = factor(batting_team),
@@ -1939,6 +1802,7 @@ section4_test <- scale_section4_data(
 ```{r section4_powerplay_model, message=FALSE, warning=FALSE}
 model_4_powerplay_era <- lme4::glmer(
   batting_team_win_num ~
+    innings+
     era * (
       pp_run_rate_z +
         pp_wickets_lost_z +
@@ -2113,7 +1977,7 @@ section4_eval <- evaluate_section4_model(
   model = model_4_powerplay_era,
   train_data = section4_train,
   test_data = section4_test,
-  model_name = "Model 4: Powerplay era interaction"
+  model_name = "Model 4: Powerplay with era as interaction"
 )
 
 section4_performance <- section4_eval$metrics %>%
