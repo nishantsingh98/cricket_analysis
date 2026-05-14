@@ -1812,7 +1812,7 @@ section3_eval_3B <- evaluate_section3_model(
 
 section3_performance <- bind_rows(
   section3_eval_3A$metrics
-  # ,section3_eval_3B$metrics
+  ,section3_eval_3B$metrics
 ) %>%
   select(model, dataset, .metric, .estimate) %>%
   pivot_wider(
