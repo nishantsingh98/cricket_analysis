@@ -1130,7 +1130,8 @@ ggplot(
 ```{r section2_bowling_tactics_model, message=FALSE, warning=FALSE}
 # Model 2: Linear Mixed-effects model for runs conceded
 model_2_ME <- lmer(
-  over_total_runs ~ bowling_category * tactical_phase + innings + current_run_rate + overs_remaining +
+  over_total_runs ~ bowling_category * tactical_phase + innings + 
+    run_rate_before_over + overs_remaining_before +
     (1 | match_id) +
     (1 | bowler),
   data = df_section_2
