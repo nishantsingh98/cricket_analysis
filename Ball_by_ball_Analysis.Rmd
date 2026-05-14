@@ -1030,6 +1030,7 @@ summary(model_D_mixed)
 ```
 
 
+
 ## Section 2
 Bowling tactics by phase of the match
 
@@ -1082,6 +1083,22 @@ df_section_2 <- df_master %>%
     !is.na(match_id)
   )
 
+df_section_2 <- df_section_2 %>%
+  arrange(match_id, innings, over) %>%
+  group_by(match_id, innings) %>%
+  mutate(
+    score_before_over = current_score - over_total_runs,
+    wickets_before_over = wickets_lost - over_wickets,
+    overs_completed_before = over - 1,
+    overs_remaining_before = 20 - overs_completed_before,
+    run_rate_before_over = if_else(
+      overs_completed_before > 0,
+      score_before_over / overs_completed_before,
+      0
+    )
+  ) %>%
+  ungroup()
+
 # Descriptive summary
 section2_summary <- df_section_2 %>%
   group_by(tactical_phase, bowling_category) %>%
@@ -1113,7 +1130,7 @@ ggplot(
 ```{r section2_bowling_tactics_model, message=FALSE, warning=FALSE}
 # Model 2: Linear Mixed-effects model for runs conceded
 model_2_ME <- lmer(
-  over_total_runs ~ bowling_category * tactical_phase + innings + 
+  over_total_runs ~ bowling_category * tactical_phase + innings + current_run_rate + overs_remaining +
     (1 | match_id) +
     (1 | bowler),
   data = df_section_2
@@ -1142,6 +1159,112 @@ isSingular(model_2_ME)
 print(section2_summary)
 print(section2_fixed_effects)
 print(section2_random_effects)
+```
+### Model Performance
+
+```{r section2_runmodel_train_test_performance}
+set.seed(42)
+
+section2_match_ids <- unique(df_section_2$match_id)
+
+section2_train_ids <- sample(
+  section2_match_ids,
+  size = floor(0.8 * length(section2_match_ids))
+)
+
+section2_test_ids <- setdiff(section2_match_ids, section2_train_ids)
+
+section2_train <- df_section_2 %>%
+  filter(match_id %in% section2_train_ids)
+
+section2_test <- df_section_2 %>%
+  filter(match_id %in% section2_test_ids)
+
+model_2_ME_train <- lmer(
+  over_total_runs ~
+    bowling_category * tactical_phase +
+    innings +
+    current_run_rate +
+    overs_remaining +
+    (1 | match_id) +
+    (1 | bowler),
+  data = section2_train
+)
+
+section2_train_preds <- section2_train %>%
+  mutate(
+    .pred_runs = predict(
+      model_2_ME_train,
+      newdata = section2_train,
+      allow.new.levels = TRUE
+    )
+  )
+
+section2_test_preds <- section2_test %>%
+  mutate(
+    .pred_runs = predict(
+      model_2_ME_train,
+      newdata = section2_test,
+      allow.new.levels = TRUE
+    )
+  )
+
+section2_regression_metrics <- metric_set(
+  rmse,
+  mae,
+  rsq
+)
+
+section2_train_metrics <- section2_regression_metrics(
+  section2_train_preds,
+  truth = over_total_runs,
+  estimate = .pred_runs
+) %>%
+  mutate(dataset = "Train")
+
+section2_test_metrics <- section2_regression_metrics(
+  section2_test_preds,
+  truth = over_total_runs,
+  estimate = .pred_runs
+) %>%
+  mutate(dataset = "Test")
+
+section2_runs_model_performance <- bind_rows(
+  section2_train_metrics,
+  section2_test_metrics
+) %>%
+  select(dataset, .metric, .estimate) %>%
+  pivot_wider(
+    names_from = .metric,
+    values_from = .estimate
+  )
+
+section2_runs_model_performance
+
+section2_prediction_check <- section2_test_preds %>%
+  group_by(tactical_phase, bowling_category) %>%
+  summarise(
+    overs = n(),
+    actual_avg_runs = mean(over_total_runs, na.rm = TRUE),
+    predicted_avg_runs = mean(.pred_runs, na.rm = TRUE),
+    prediction_error = actual_avg_runs - predicted_avg_runs,
+    .groups = "drop"
+  )
+
+section2_prediction_check
+
+ggplot(
+  section2_test_preds,
+  aes(x = over_total_runs, y = .pred_runs)
+) +
+  geom_point(alpha = 0.25) +
+  geom_abline(linetype = "dashed") +
+  theme_minimal() +
+  labs(
+    title = "Section 2 Runs-Conceded Model: Observed vs Predicted Runs",
+    x = "Observed runs in over",
+    y = "Predicted runs in over"
+  )
 ```
 
 #### spin_vs_pace_difference in differernt phases 
@@ -1277,6 +1400,7 @@ outcome_metrics <- metric_set(
 performance <- outcome_metrics(
   outcome_preds,
   truth = bowling_team_win,
+  estimate = .pred_class,
   .pred_Yes,
   event_level = "second"
 )
