@@ -1844,6 +1844,10 @@ section3_roc %>%
     y = "Sensitivity",
     color = "Dataset"
   )
+
+cat("SD Current score:", section3_scaling_values$current_score_sd, "\n")
+cat("SD current wickets:", section3_scaling_values$wickets_lost_sd, "\n")
+cat("SD current run rate:", section3_scaling_values$current_run_rate_sd, "\n")
 ```
 
 
@@ -2083,14 +2087,12 @@ model_4_powerplay_era <- lme4::glmer(
   batting_team_win_num ~
     innings+
     era * (
-      pp_run_rate_z +
+        pp_run_rate_z +
         pp_wickets_lost_z +
         pp_boundaries_z +
         pp_dot_balls_z
     ) +
-    toss_decision +
-    (1 | batting_team) +
-    (1 | bowling_team),
+    (1 | batting_team),
   data = section4_train,
   family = binomial(link = "logit")
 )
